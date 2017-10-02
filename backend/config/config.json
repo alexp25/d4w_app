@@ -46,7 +46,7 @@
 	
 	"controller_names":["no_leak","leak_s5","leak_s11"],
 	
-	"db_selection": "db_for_home",
+	"db_selection": "db_for_upb",
 
 	"db_for_upb": {
 		"server":"DESKTOP-OBL3M97\\SQLEXPRESS",
