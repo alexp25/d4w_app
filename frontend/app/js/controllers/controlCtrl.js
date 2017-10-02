@@ -92,6 +92,14 @@ angular.module('app').controller('controlCtrl', ['$scope', 'socket', '$timeout',
       }
     };
 
+    var startPollingWs_socketio = function() {
+      $scope.timer[1] = $timeout(function() {
+        socket.emit('get_data', $scope.selected, function(data) {
+          startPollingWs_socketio();
+        });
+      }, 0);
+    };
+    
     $scope.send = function(data) {
       socket.emit('post_data', data);
       console.log(data);
@@ -116,11 +124,13 @@ angular.module('app').controller('controlCtrl', ['$scope', 'socket', '$timeout',
           $scope.control.ref = $scope.jsondata.info.ref;
           $scope.setValue(2, $scope.jsondata.info.ref);
         }
- 
+
         $scope.setValue(3, $scope.jsondata.info.yk);
       });
       startPollingWs_socketio();
     };
+
+
 
 
     $scope.downloadServerLog = function(url) {
@@ -144,15 +154,6 @@ angular.module('app').controller('controlCtrl', ['$scope', 'socket', '$timeout',
         .error(function(res) {
 
         });
-    };
-
-
-    var startPollingWs_socketio = function() {
-      $scope.timer[1] = $timeout(function() {
-        socket.emit('get_data', $scope.selected, function(data) {
-          startPollingWs_socketio();
-        });
-      }, 0);
     };
 
 

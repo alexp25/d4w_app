@@ -19,21 +19,6 @@ angular.module('app').controller('overviewCtrl', ['$scope', 'esriLoader', 'socke
       center: [26.036, 44.492]
     };
 
-
-    var initSocket = function() {
-      socket.connect();
-      socket.on('get_data', function(data) {
-        $scope.jsondata = angular.fromJson(data);
-
-        if ($scope.jsondata.value2 !== undefined) {
-          // (Number($scope.jsondata.value).toFixed(2)
-          numericDisplay.setValue($scope.jsondata.value2.toString());
-        }
-      });
-      startPollingWs_socketio();
-    };
-
-
     var startPollingWs_socketio = function() {
       $scope.timer[1] = $timeout(function() {
         // socket.emit('get_data', {
@@ -48,7 +33,18 @@ angular.module('app').controller('overviewCtrl', ['$scope', 'esriLoader', 'socke
       }, 0);
     };
 
+    var initSocket = function() {
+      socket.connect();
+      socket.on('get_data', function(data) {
+        $scope.jsondata = angular.fromJson(data);
 
+        if ($scope.jsondata.value2 !== undefined) {
+          // (Number($scope.jsondata.value).toFixed(2)
+          numericDisplay.setValue($scope.jsondata.value2.toString());
+        }
+      });
+      startPollingWs_socketio();
+    };
 
     $scope.init = function() {
 
@@ -276,7 +272,87 @@ angular.module('app').controller('overviewCtrl', ['$scope', 'esriLoader', 'socke
             //   position: "top-left"
             // });
 
+            var chartRefresh = function() {
+              var min, max;
+              console.log('chart refresh');
+              if ($scope.valueArray) {
+                max = Math.max.apply(null, $scope.valueArray);
+                min = Math.min.apply(null, $scope.valueArray);
+                // auto range
+                $scope.chart[0].options.range = [min - 10, max + 10];
+              }
+              $scope.chartData = {
+                array: [$scope.dataArray],
+                timestamp: new Date()
+              };
+            };
 
+            var chartUpdate = function(jsonObj) {
+              console.log('chart update');
+              $scope.dataArray = [];
+              $scope.valueArray = [];
+              var j;
+              for (j = 0; j < jsonObj.length; j++) {
+                $scope.dataArray[j] = {
+                  // x: jsonObj[j].Timestamp.getTime(),
+                  x: new Date(jsonObj[j].Timestamp),
+                  // x: jsonObj[j].Timestamp,
+                  y: jsonObj[j].Value
+                };
+                $scope.valueArray[j] = jsonObj[j].Value;
+              }
+              chartRefresh();
+            };
+
+            var getData = function(params1) {
+              $scope.hasData = false;
+              console.log('getData: ', params1);
+              $http.get('/api/database/sensors', {
+                params: {
+                  param: params1
+                }
+              }).
+              then(function(data) {
+                var i;
+                var jsonObj = angular.fromJson(data.data);
+                $scope.jsonObj = jsonObj;
+
+                if ($scope.jsonObj === false) {
+                  return;
+                }
+                if ($scope.jsonObj.result === 1) {
+                  return;
+                }
+
+                $scope.hasData = true;
+                console.log($scope.jsonObj[0]);
+                $scope.displayData = false;
+                if (jsonObj[0] !== undefined) {
+                  var startDate = jsonObj[0].Timestamp;
+                  var endDate = jsonObj[jsonObj.length - 1].Timestamp;
+                  var dataInterval = (endDate - startDate) / jsonObj.length;
+
+                  for (i = 0; i < $scope.chart.length; i++) {
+                    $scope.chart[i].options.pointStart = startDate;
+                    $scope.chart[i].options.pointInterval = dataInterval;
+                  }
+                  chartUpdate(jsonObj);
+                  $timeout(function() {
+                    $scope.displayData = true;
+                  });
+
+                  console.log('dataset updated');
+                }
+
+              }).
+              catch(function(data) {
+                $scope.jsondata = 'error';
+                $scope.hasData = true;
+                //alert('error');
+              });
+
+
+            };
             /********************
              * Add watch
              ********************/
@@ -295,6 +371,9 @@ angular.module('app').controller('overviewCtrl', ['$scope', 'esriLoader', 'socke
 
             // The popup will automatically be dockEnabled when made visible
             popup.dockEnabled = true;
+
+
+
 
             popup.viewModel.on("trigger-action", function(event) {
               var attr;
@@ -326,7 +405,22 @@ angular.module('app').controller('overviewCtrl', ['$scope', 'esriLoader', 'socke
               });
             });
 
+            var chartInit = function(n) {
+              $scope.dataArray = [];
+              for (var j = 0; j < 50; j++) {
+                $scope.dataArray[j] = {
+                  x: 0,
+                  y: 0
+                };
+              }
+            };
 
+            var pollData = function() {
+              $scope.timer[2] = $timeout(function() {
+                getData($scope.selected);
+                pollData();
+              }, 5000);
+            };
 
             function getGraphics(response) {
               // the topmost graphic from the click location
@@ -477,11 +571,6 @@ angular.module('app').controller('overviewCtrl', ['$scope', 'esriLoader', 'socke
 
     };
 
-
-
-
-
-
     $scope.chart = [{
       ntraces: 1,
       options: {
@@ -494,105 +583,6 @@ angular.module('app').controller('overviewCtrl', ['$scope', 'esriLoader', 'socke
         labels: ['sensor data']
       }
     }];
-
-    var chartInit = function(n) {
-      $scope.dataArray = [];
-      for (var j = 0; j < 50; j++) {
-        $scope.dataArray[j] = {
-          x: 0,
-          y: 0
-        };
-      }
-    };
-
-    var chartUpdate = function(jsonObj) {
-      console.log('chart update');
-      $scope.dataArray = [];
-      $scope.valueArray = [];
-      var j;
-      for (j = 0; j < jsonObj.length; j++) {
-        $scope.dataArray[j] = {
-          // x: jsonObj[j].Timestamp.getTime(),
-          x: new Date(jsonObj[j].Timestamp),
-          // x: jsonObj[j].Timestamp,
-          y: jsonObj[j].Value
-        };
-        $scope.valueArray[j] = jsonObj[j].Value;
-      }
-      chartRefresh();
-    };
-
-    var chartRefresh = function() {
-      var min, max;
-      console.log('chart refresh');
-      if ($scope.valueArray) {
-        max = Math.max.apply(null, $scope.valueArray);
-        min = Math.min.apply(null, $scope.valueArray);
-        // auto range
-        $scope.chart[0].options.range = [min - 10, max + 10];
-      }
-      $scope.chartData = {
-        array: [$scope.dataArray],
-        timestamp: new Date()
-      };
-    };
-
-    var pollData = function() {
-      $scope.timer[2] = $timeout(function() {
-        getData($scope.selected);
-        pollData();
-      }, 5000);
-    };
-
-    var getData = function(params1) {
-      $scope.hasData = false;
-      console.log('getData: ', params1);
-      $http.get('/api/database/sensors', {
-        params: {
-          param: params1
-        }
-      }).
-      then(function(data) {
-        var i;
-        var jsonObj = angular.fromJson(data.data);
-        $scope.jsonObj = jsonObj;
-
-        if ($scope.jsonObj === false) {
-          return;
-        }
-        if ($scope.jsonObj.result === 1) {
-          return;
-        }
-
-        $scope.hasData = true;
-        console.log($scope.jsonObj[0]);
-        $scope.displayData = false;
-        if (jsonObj[0] !== undefined) {
-          var startDate = jsonObj[0].Timestamp;
-          var endDate = jsonObj[jsonObj.length - 1].Timestamp;
-          var dataInterval = (endDate - startDate) / jsonObj.length;
-
-          for (i = 0; i < $scope.chart.length; i++) {
-            $scope.chart[i].options.pointStart = startDate;
-            $scope.chart[i].options.pointInterval = dataInterval;
-          }
-          chartUpdate(jsonObj);
-          $timeout(function() {
-            $scope.displayData = true;
-          });
-
-          console.log('dataset updated');
-        }
-
-      }).
-      catch(function(data) {
-        $scope.jsondata = 'error';
-        $scope.hasData = true;
-        //alert('error');
-      });
-
-
-    };
 
     var clearTimers = function() {
       for (var i = 0; i < $scope.timer.length; i++) {

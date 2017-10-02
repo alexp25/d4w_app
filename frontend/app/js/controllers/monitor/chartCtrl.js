@@ -102,6 +102,18 @@ angular.module('app').controller('monitorChartCtrl', ['SharedProperties', 'Globa
       }
     };
 
+    var chartRefresh = function() {
+      var min, max;
+      console.log('chart refresh');
+      if ($scope.valueArray) {
+        max = Math.max.apply(null, $scope.valueArray);
+        min = Math.min.apply(null, $scope.valueArray);
+        // auto range
+        $scope.chart[0].options.range = [min - zoomLevel, max + zoomLevel];
+      }
+      $scope.chupdate = !$scope.chupdate;
+    };
+
     var chartUpdate = function(jsonObj) {
       console.log('chart update');
       $scope.dataArray = [];
@@ -118,16 +130,93 @@ angular.module('app').controller('monitorChartCtrl', ['SharedProperties', 'Globa
       chartRefresh();
     };
 
-    var chartRefresh = function() {
-      var min, max;
-      console.log('chart refresh');
-      if ($scope.valueArray) {
-        max = Math.max.apply(null, $scope.valueArray);
-        min = Math.min.apply(null, $scope.valueArray);
-        // auto range
-        $scope.chart[0].options.range = [min - zoomLevel, max + zoomLevel];
+    function average(v) {
+      var avg = 0;
+      for (var i = 0; i < v.length; i++) {
+        avg += v[i];
       }
-      $scope.chupdate = !$scope.chupdate;
+      return avg / v.length;
+    }
+    
+    var updateInfo = function() {
+      console.log('update info');
+      if ($scope.valueArray) {
+
+        var series = $scope.valueArray;
+        var avg = Math.floor(average(series));
+        $scope.localData = {
+          'last': series[series.length - 1],
+          'max': Math.max.apply(null, series),
+          'min': Math.min.apply(null, series),
+          'avg': avg
+        };
+        $scope.chart[0].options.maxThreshold = avg;
+      }
+    };
+
+    var getData = function(reqType, param1) {
+      if (reqType === undefined || param1 === undefined) {
+        return;
+      }
+      $scope.hasData = false;
+
+      console.log('getData: ', reqType, param1);
+      $http.get($scope.serverURL + '/api/database/sensors/' + reqType, {
+        params: {
+          param: param1
+        }
+      }).
+      then(function(data) {
+        var jsonObj = angular.fromJson(data.data);
+        console.log(jsonObj);
+        // console.log(jsonObj[0].ts);
+        $scope.jsonObj = jsonObj;
+        $scope.info = data.info;
+        var i;
+
+        if ($scope.jsonObj !== false) {
+          $scope.hasData = true;
+
+          $scope.displayData = false;
+          // for (i = 0; i < jsonObj.length; i++) {
+          //   $scope.jsonObj[i].ts = new Date(jsonObj[i].ts);
+          // }
+
+          var dt = new Date(jsonObj[0].ts);
+          var startDate = Date.UTC(dt.getFullYear(), dt.getMonth(), dt.getDate(), dt.getHours(), dt.getMinutes(), dt.getSeconds());
+
+          dt = new Date(jsonObj[jsonObj.length - 1].ts);
+          var endDate = Date.UTC(dt.getFullYear(), dt.getMonth(), dt.getDate(), dt.getHours(), dt.getMinutes(), dt.getSeconds());
+
+          var dataInterval = (endDate - startDate) / jsonObj.length;
+
+          if (dataInterval < 0) {
+            var aux = startDate;
+            startDate = endDate;
+            endDate = aux;
+            dataInterval = -dataInterval;
+          }
+
+          for (i = 0; i < $scope.chart.length; i++) {
+            $scope.chart[i].options.pointStart = startDate;
+            $scope.chart[i].options.pointInterval = dataInterval;
+          }
+
+          chartUpdate(jsonObj);
+          updateInfo();
+
+          $timeout(function() {
+            $scope.displayData = true;
+          });
+
+          console.log('dataset updated');
+        }
+      }).
+      catch(function(data) {
+        $scope.jsondata = 'error';
+        $scope.hasData = true;
+        //alert('error');
+      });
     };
 
     $scope.autoUpdate = function() {
@@ -219,96 +308,6 @@ angular.module('app').controller('monitorChartCtrl', ['SharedProperties', 'Globa
       chartRefresh();
     };
 
-    var getData = function(reqType, param1) {
-      if (reqType === undefined || param1 === undefined) {
-        return;
-      }
-      $scope.hasData = false;
-
-      console.log('getData: ', reqType, param1);
-      $http.get($scope.serverURL + '/api/database/sensors/' + reqType, {
-        params: {
-          param: param1
-        }
-      }).
-      then(function(data) {
-        var jsonObj = angular.fromJson(data.data);
-        console.log(jsonObj);
-        // console.log(jsonObj[0].ts);
-        $scope.jsonObj = jsonObj;
-        $scope.info = data.info;
-        var i;
-
-        if ($scope.jsonObj !== false) {
-          $scope.hasData = true;
-
-          $scope.displayData = false;
-          // for (i = 0; i < jsonObj.length; i++) {
-          //   $scope.jsonObj[i].ts = new Date(jsonObj[i].ts);
-          // }
-
-          var dt = new Date(jsonObj[0].ts);
-          var startDate = Date.UTC(dt.getFullYear(), dt.getMonth(), dt.getDate(), dt.getHours(), dt.getMinutes(), dt.getSeconds());
-
-          dt = new Date(jsonObj[jsonObj.length - 1].ts);
-          var endDate = Date.UTC(dt.getFullYear(), dt.getMonth(), dt.getDate(), dt.getHours(), dt.getMinutes(), dt.getSeconds());
-
-          var dataInterval = (endDate - startDate) / jsonObj.length;
-
-          if (dataInterval < 0) {
-            var aux = startDate;
-            startDate = endDate;
-            endDate = aux;
-            dataInterval = -dataInterval;
-          }
-
-          for (i = 0; i < $scope.chart.length; i++) {
-            $scope.chart[i].options.pointStart = startDate;
-            $scope.chart[i].options.pointInterval = dataInterval;
-          }
-
-          chartUpdate(jsonObj);
-          updateInfo();
-
-          $timeout(function() {
-            $scope.displayData = true;
-          });
-
-          console.log('dataset updated');
-        }
-      }).
-      catch(function(data) {
-        $scope.jsondata = 'error';
-        $scope.hasData = true;
-        //alert('error');
-      });
-    };
-
-
-
-    var updateInfo = function() {
-      console.log('update info');
-      if ($scope.valueArray) {
-
-        var series = $scope.valueArray;
-        var avg = Math.floor(average(series));
-        $scope.localData = {
-          'last': series[series.length - 1],
-          'max': Math.max.apply(null, series),
-          'min': Math.min.apply(null, series),
-          'avg': avg
-        };
-        $scope.chart[0].options.maxThreshold = avg;
-      }
-    };
-
-    function average(v) {
-      var avg = 0;
-      for (var i = 0; i < v.length; i++) {
-        avg += v[i];
-      }
-      return avg / v.length;
-    }
 
     $scope.postSettings = function() {
       updateUserOptions();

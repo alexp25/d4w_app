@@ -19,7 +19,7 @@
   ],
   "dependencies": {
     "angular": "1.4.0",
-    "angular-animate": "^1.6.2",
+    "angular-animate": "1.5.3",
     "angular-bootstrap": "^2.5.0",
     "angular-cookies": "latest",
     "angular-material": "0.11.2",
@@ -33,36 +33,21 @@
     "jquery-ui": "latest",
     "malihu-custom-scrollbar-plugin": "latest",
     "angular-ui-bootstrap": "latest",
-    "angular-touch": "latest",
-    "angular-websocket": "latest",
     "angular-sanitize": "~1.4.8",
     "bootstrap-switch": "~3.3.2",
     "angularjs-slider": "2.11.0",
     "angular-messages": "~1.5.7",
     "use-form-error": "~0.0.2",
-    "angular-fusioncharts": "^0.0.2",
-    "fusioncharts": "^3.11.3",
     "angular-scroll-glue": "^2.1.0",
-    "angular-ui": "^0.4.0",
     "jquery": "2.2.4",
-    "ionic": "driftyco/ionic-bower#v1.3.2",
     "ng-csv": "^0.3.6",
-    "socket.io-client": "^1.7.2",
-    "angular-chart.js": "^1.1.1",
-    "angular-flow-chart": "^0.0.2",
-    "angular-plotly": "^0.1.3",
     "c3": "^0.4.11",
     "at-table": "^1.0.7"
   },
   "resolutions": {
     "angular": "1.4.0",
-    "highcharts-ng": "^1.0.0",
-    "highcharts": "^5.0.7",
     "jquery": "2.2.4",
     "angular-animate": "1.5.3",
-    "angular-sanitize": "1.5.3",
-    "ionic": "v1.3.2",
-    "socket.io-client": "^1.7.2",
-    "angularjs-slider": "2.11.0"
+    "angular-sanitize": "1.5.3"
   }
 }

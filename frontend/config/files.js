@@ -16,8 +16,8 @@ module.exports = function(lineman) {
         'vendor/bower_components/angular-ui/build/angular-ui.js',
         'vendor/bower_components/angular-bootstrap/ui-bootstrap.js',
         'vendor/bower_components/angular-bootstrap/ui-bootstrap-tpls.js',
-        'vendor/bower_components/angular-animate/angular-animate.js',
-        'vendor/bower_components/angular-aria/angular-aria.js',
+        // 'vendor/bower_components/angular-animate/angular-animate.js',
+        // 'vendor/bower_components/angular-aria/angular-aria.js',
         'vendor/bower_components/angular-material/angular-material.js',
         'vendor/bower_components/angular-ui-router/release/angular-ui-router.js',
 

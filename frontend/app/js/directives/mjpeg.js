@@ -35,25 +35,12 @@ angular.module('app')
             scope.$apply();
         });*/
 
-        scope.$watch('url', function(newVal, oldVal) {
-          if (newVal) {
-            console.log('new img url');
-            //  console.log(element);
-            //console.log(scope.maxheight);
-            createNewIframe(newVal);
-          } else {
-            element.html('<span></span>');
-          }
-        }, true);
-
         var createNewIframe = function(newVal) {
           var iframe = document.createElement('iframe');
           iframe.setAttribute('width', '100%');
           iframe.setAttribute('frameborder', '0');
           iframe.setAttribute('scrolling', 'no');
           iframe.setAttribute('id', 'iframe1');
-
-
           iframe.setAttribute('allowFullScreen', 'true'); //
           element.replaceWith(iframe);
 
@@ -99,8 +86,17 @@ angular.module('app')
           doc.writeln(iframeHtml);
           doc.close();
         };
-
-
+        
+        scope.$watch('url', function(newVal, oldVal) {
+          if (newVal) {
+            console.log('new img url');
+            //  console.log(element);
+            //console.log(scope.maxheight);
+            createNewIframe(newVal);
+          } else {
+            element.html('<span></span>');
+          }
+        }, true);
       }
     };
   }]);

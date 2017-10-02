@@ -9,6 +9,20 @@ angular.module('app').controller('detailViewCtrl', ['$scope', 'socket', '$timeou
       id: 0
     };
 
+    var startPollingWs_socketio = function() {
+      $scope.timer[1] = $timeout(function() {
+        // socket.emit('get_data', {
+        //   message: ''
+        // }, function(data) {
+        //   startPollingWs_socketio();
+        // });
+
+        socket.emit('get_data', $scope.selected, function(data) {
+          startPollingWs_socketio();
+        });
+      }, 0);
+    };
+
     $scope.uiTable = false;
 
     $scope.list = [{
@@ -46,19 +60,7 @@ angular.module('app').controller('detailViewCtrl', ['$scope', 'socket', '$timeou
     };
 
 
-    var startPollingWs_socketio = function() {
-      $scope.timer[1] = $timeout(function() {
-        // socket.emit('get_data', {
-        //   message: ''
-        // }, function(data) {
-        //   startPollingWs_socketio();
-        // });
 
-        socket.emit('get_data', $scope.selected, function(data) {
-          startPollingWs_socketio();
-        });
-      }, 0);
-    };
 
 
 
