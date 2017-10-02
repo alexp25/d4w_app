@@ -1,0 +1,46 @@
+<div class="raspi-page" layout="column">
+
+  <h1 style="text-align:center;">Alex Smart Home</h1>
+  <h4 class="raspi-h4" style="text-align:center;">Log in</h4>
+
+  <!--<h4 class="raspi-h4" ng-show="error" style="text-align:center; color:red;">{{errorMessage]}</h4>-->
+
+  <div class="center-element">
+    <!--ng-submit    placeholder-->
+    <form class="form" name="loginForm1" layout="column" ng-init="init();">
+
+      <md-input-container>
+        <!-- <span class="raspi-label-s">Username</span> -->
+        <label class="raspi-label-s">Username</label>
+        <input class="form-control raspi-padding" name="username" ng-model="newUser.username" required type="text">
+      </md-input-container>
+      <md-input-container>
+        <label class="raspi-label-s">Password</label>
+        <input class="form-control raspi-padding" name="password" ng-model="newUser.password" required type="password">
+      </md-input-container>
+
+      <div class="raspi-margin" layout="column">
+        <!-- <a ng-click="">Forgot your password?</a> -->
+        <md-button class="md-primary" style="min-width:150px;" ng-click="login();">Log in</md-button>
+      </div>
+    </form>
+
+    <div layout="column">
+      <a ng-click="goToRegister();" class="btn btn-link">Register</a>
+
+      <!-- <div style="text-align:center">
+
+        <h4 class="raspi-h4">Cookies must be enabled in your browser</h4>
+        <div>
+          <span></span>
+          <a href="https://mail.google.com/mail/u/0/#inbox?compose=new">
+            Contact the administrator</a>
+        </div>
+      </div> -->
+
+    </div>
+  </div>
+  <div animate class="raspi-directive-border" flex ng-if="!hasData" style="width:100%;">
+    <md-progress-linear md-mode="indeterminate"></md-progress-linear>
+  </div>
+</div>

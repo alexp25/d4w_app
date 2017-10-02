@@ -1,0 +1,37 @@
+<label class="raspi-label-m" style="text-align:start;" ng-if="caption!==undefined;">{{caption}}</label>
+<div class="animate-element-if">
+  <div animate class="raspi-directive-border" ng-if="!object">
+    <md-progress-linear md-mode="indeterminate"></md-progress-linear>
+  </div>
+  <div class="raspi-directive-content md-primary" layout="row">
+    <div flex layout="column" ng-if="debug">
+      <div ng-repeat="(key,value) in object">
+        {{key}}:
+        {{value}}
+      </div>
+    </div>
+    <div flex layout="row" layout-align="space-between center">
+      <div flex layout="column" layout-align="center center">
+        <span class="raspi-label-s">{{object.type}}</span>
+        <!-- <div layout="row" layout-align="space-between center">
+          <raspi-numeric flex items="object.value"></raspi-numeric>
+          <span flex class="raspi-label-s">{{object.unit}}</span>
+        </div> -->
+        <!-- {{object.value}} -->
+        <raspi-numeric items="object.value"></raspi-numeric>
+        <span class="raspi-label-s">{{object.unit}}</span>
+      </div>
+      <div flex ng-if="validData && graphic">
+        <div ng-if="type==='temperature'" layout="column">
+          <raspi-level value="value" color="#ff5050" size="{width:widgetWidth,height:widgetHeight}" caption="{{object.type}}" range="[object.minValue,object.maxValue]"></raspi-level>
+        </div>
+        <div ng-if="type==='humidity'" layout="column">
+          <raspi-level value="value" color="#90CAF9" size="{width:widgetWidth,height:widgetHeight}" caption="{{object.type}}" range="[object.minValue,object.maxValue]"></raspi-level>
+        </div>
+        <div ng-if="type==='other'">
+          <raspi-gauge-minimal size="{width:widgetWidth*1.5,height:widgetHeight}" color="#90CAF9" caption="{{object.type}}"  range="[object.minValue,object.maxValue]" style="text-align:center;" value="value"></raspi-gauge-minimal>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

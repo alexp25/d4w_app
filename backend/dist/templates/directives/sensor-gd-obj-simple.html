@@ -1,0 +1,14 @@
+<div ng-repeat="data1 in object track by $index" ng-init="dataIndex = $index;">
+
+  <div layout="row" layout-align="space-between center">
+    <div flex layout="row">
+      <span class="raspi-label-m">[{{data1.id}}] {{data1.type}}</span>
+      <span class="raspi-label-m" ng-if="data1.unit!==''">&emsp;({{data1.unit}})</span>
+    </div>
+    <raspi-numeric flex items="data1.value"></raspi-numeric>
+    <!-- {{metadata1.type}} -->
+
+    <!-- <sensor-gd ng-if="graphic" value="data1.value" metadata="metadata1" widget-height="widgetHeight"></sensor-gd> -->
+  </div>
+  <md-divider></md-divider>
+</div>

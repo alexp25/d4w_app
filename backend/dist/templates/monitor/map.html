@@ -1,0 +1,16 @@
+<div class="raspi-frame md-primary" layout="column" ng-init="init();">
+
+  <!-- this directive is available from angular-esri-map -->
+  <esri-map-view class="esri-view" map="map" on-create="onViewCreated" view-options="{
+      zoom: 10,
+      center: [-100.33, 25.69],
+      ui: {
+        components: ['attribution']
+      },
+      constraints: {
+        minZoom: 7,
+        maxZoom: 12
+      }
+    }"></esri-map-view>
+
+</div>

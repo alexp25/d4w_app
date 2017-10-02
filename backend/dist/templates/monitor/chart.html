@@ -1,0 +1,77 @@
+<div class="raspi-frame md-primary" layout="column" ng-init="init();">
+  <div layout-align-gt-md="space-between start" layout-align="space-between center" layout-gt-md="row" layout="column">
+    <div class="raspi-margin" layout="column">
+      <!--<md-datepicker class="raspi-bg" md-max-date="maxDate" md-min-date="minDate" md-placeholder="Enter date" ng-model="myDate"></md-datepicker>-->
+      <h4 class="raspi-h4">
+        Monitor
+      </h4>
+      <div layout="column">
+        <md-input-container>
+          <span class="raspi-label-s">Sensor id</span>
+          <md-select ng-change="userRequestData();resetAutoUpdate();" ng-model="settings.sensorId">
+            <md-option ng-repeat="node in nodes" ng-value="node.s_id">
+              {{node.s_id}}
+            </md-option>
+          </md-select>
+          <!-- <select class="raspi-numeric-input-s md-primary" ng-model="selectedNode" ng-change="noAutoUpdate(); userRequestData();" ng-options="element as element.SensorId for element in nodes"></select> -->
+        </md-input-container>
+        <md-input-container>
+          <span class="raspi-label-s">Channel id</span>
+          <input class="md-primary" min="1" ng-model="settings.channelId" type="number"></input>
+        </md-input-container>
+        <md-input-container>
+          <span class="raspi-label-s">Request</span>
+          <md-select ng-change="userRequestData();resetAutoUpdate();" ng-model="settings.requestType">
+            <md-option ng-repeat="d in requestSettings.options" ng-value="d.value">
+              {{d.label}}
+            </md-option>
+          </md-select>
+          <!-- {{selectedReqType}} -->
+          <!-- <select class="raspi-numeric-input-s md-primary" ng-model="selectedReqType" ng-options="d as d.label for d in requestSettings.options"></select> -->
+        </md-input-container>
+      </div>
+
+      <!-- <label class="raspi-label-m">Update</label> -->
+      <div class="raspi-button-holder" layout="column">
+        <md-button aria-label="" class="md-primary" ng-click="userRequestData();resetAutoUpdate();">Request data</md-button>
+        <md-button aria-label="" class="md-primary" ng-click="getWeatherData();">Request weather data</md-button>
+        <md-button class="md-primary" filename="sensor_data.csv" ng-csv="jsonObj">Export Data</md-button>
+
+        <!-- <md-button aria-label="" class="md-primary" flex ng-click="yzoom(1);">Zoom In</md-button>
+        <md-button aria-label="" class="md-primary" flex ng-click="yzoom(0);">Zoom Out</md-button> -->
+
+        <!-- <span class="raspi-label-s">chart 1</span>
+        <highchart class="span10" config="chartConfig" id="chart1"></highchart> -->
+
+      </div>
+    </div>
+
+<!-- ng-if="displayData" -->
+    <div flex class="raspi-margin" layout="column"  style="width:100%">
+      <div ng-if="settings.debugMode">
+        <raspi-html-box html="info"></raspi-html-box>
+      </div>
+      <!-- <span class="raspi-label-s">chart</span> -->
+      <!-- <raspi-chart-time array="[array]" options="chart[0].options" size="{height:settings.chartHeight}" update="signalUpdate"></raspi-chart-time> -->
+
+      <raspi-plain-chart array="[dataArray]" options="chart[0].options" update="chupdate"></raspi-plain-chart>
+      <!-- <highchart config="testChartConfig"></highchart> -->
+
+      <div layout="column">
+        <div ng-if="settings.debugMode">
+          <raspi-textbox text="'min: ' + localData.min + ' max: ' + localData.max + ' avg: ' + localData.avg + ' last: ' + localData.last"></raspi-textbox>
+        </div>
+        <div layout="column" ng-if="selectedReqType===weatherRequests[1];hasWeatherData===true;">
+          <raspi-textbox text="'temp: '+weatherData.main.temp+'&deg;C  hum: '+weatherData.main.humidity+'%'+'  '+weatherData.weather[0].description"></raspi-textbox>
+          <span style="font-size:16px;text-align:center;">{{(weatherData.dt * 1000) | date : "dd.MM.yyyy - HH:mm:ss"}}</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div animate class="raspi-directive-border" flex ng-if="!hasData" style="width:100%;">
+    <md-progress-linear md-mode="indeterminate"></md-progress-linear>
+  </div>
+
+</div>

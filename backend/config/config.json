@@ -1,0 +1,74 @@
+{
+	"debug": false,
+	"db_file":"Database/mydatabase.db",
+	"log_file_stdout":"stdout_log.txt",
+	"t_log":5,
+	"db_logging":false,
+	
+	"ts":0.1,
+	
+	"y_index":8,
+	"ts_control": 0.1,
+	"ts_disp":0.05,
+	"ts_ramp":5,
+	"du_ramp":10,
+	"u_min":120,
+	
+	"ts_spab":0.1,
+	
+	"um_spab":200,
+	"du_spab":30,
+	
+	"step_sequence":[200,225,250],
+	"ref_step_sequence":[200,300],
+	"ts_step":10,
+
+	"devices":[
+		{
+			"ip": "127.0.0.1"
+		},
+		{
+			"ip": "192.168.1.107"
+		}
+	],
+	
+	"models":[
+		{"num":[0.3625],"den":[1,0.8187], "u_min":100, "y_min":0},
+		{"num":[0.2097],"den":[1,0.7903],"u_min":100, "y_min":0},
+		{"num":[0.2212],"den":[1,0.7788],"u_min":100, "y_min":0}		
+	],
+
+	"controllers":[
+		{"id":1, "kp":0.1,"ki":0.05,"kd":0,"tf":0},
+		{"id":2, "kp":0.17,"ki":0.4,"kd":0,"tf":0},
+		{"id":3,"kp":0.16,"ki":0.4,"kd":0,"tf":0}
+	],
+	
+	"controller_names":["no_leak","leak_s5","leak_s11"],
+	
+	"db_selection": "db_for_home",
+
+	"db_for_upb": {
+		"server":"DESKTOP-OBL3M97\\SQLEXPRESS",
+		"database":"WaterNetworkTest",
+		"username":"alex",
+		"password":"alexupb",
+		"driver":"{ODBC Driver 13 for SQL Server}"
+	},
+	"db_for_upb_server": {
+		"server":"L604_PRECIS\\SQLEXPRESS",
+		"database":"WaterNetworkTest",
+		"username":"sa",
+		"password":"alexupb",
+		"driver":"{ODBC Driver 13 for SQL Server}"
+	},
+	"db_for_home": {
+		"server":"DESKTOP-RBS0PB5\\SQLEXPRESS",
+		"database":"WaterNetworkTest",
+		"username":"alex",
+		"password":"25coto93",
+		"driver":"{ODBC Driver 13 for SQL Server}"
+	}
+
+	
+}

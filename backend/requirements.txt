@@ -1,0 +1,13 @@
+Flask
+Flask_SocketIO
+itsdangerous
+Jinja2
+MarkupSafe
+python-engineio
+python-socketio
+six
+Werkzeug
+python-dateutil
+
+flask-sockets
+pyodbc

@@ -1,0 +1,17 @@
+<div class="raspi-frame md-primary" layout="column" ng-init="init();">
+  <raspi-html-box flex html="jsondata.info"></raspi-html-box>
+  <div flex layout="row" layout-align="space-between center">
+    <div layout="column" class="raspi-button-holder">
+      <md-button class="md-primary" ng-click="downloadServerLog();">Download server log</md-button>
+      <md-button class="md-primary" ng-click="restart();">Restart</md-button>
+    </div>
+  </div>
+
+  <!-- <div ng-repeat="str in jsondata.debug">
+      <raspi-textbox text="str"></raspi-textbox>
+    </div> -->
+  <span class="raspi-label-m">Debug info</span>
+  <textarea name="textarea" style="width:auto; height: 20rem; overflow-y: auto;" class="md-primary" scroll-glue>{{debugInfo}}</textarea>
+
+</div>
+</div>

@@ -1,0 +1,211 @@
+<style>
+  body {
+    /*font-family: "Open Sans";*/
+    font-family: sans-serif;
+    margin: 6em 2em 2em 2em;
+  }
+
+  body:before {
+    content: '';
+    position: fixed;
+    top: 2%;
+    right: 3%;
+    height: 100px;
+    width: 100px;
+    /*background: url(http://www.html5rocks.com/static/images/identity/HTML5_Badge_128.png) no-repeat 50% 50%;*/
+    background-size: contain;
+    z-index: 10;
+    opacity: 0.1;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-weight: 600;
+  }
+
+  h1 {
+    position: fixed;
+    background: -webkit-linear-gradient(top, white 65%, rgba(255, 255, 255, 0));
+    background: -moz-linear-gradient(top, white 65%, rgba(255, 255, 255, 0));
+    background: -ms-linear-gradient(top, white 65%, rgba(255, 255, 255, 0));
+    background: -o-linear-gradient(top, white 65%, rgba(255, 255, 255, 0));
+    width: 100%;
+    height: 80px;
+    padding: 10px 10px 10px 1em;
+    left: 0;
+    top: 0;
+    margin: 0;
+  }
+
+  h1 img {
+    height: 30px;
+    vertical-align: middle;
+    margin-bottom: 8px;
+  }
+
+  a {
+    color: navy;
+  }
+
+  pre {
+    background: #eee;
+    margin-left: 2em;
+    padding: 5px;
+    border-left: 3px solid #ccc;
+  }
+</style>
+
+<h1>Readme - WebHiL & Monitor App</h1>
+<h2><a name="installing-the-app-for-running">Installing the app for running</a></h2>
+
+
+<h3>Install Python 3</h3>
+<p>Download Python from <a href="https://www.python.org/downloads/">https://www.python.org/downloads/</a></p>
+<p>e.g. <code>python 3.6.1, Windows x86-64 executable installer</code></p>
+<p>check add to path during the instalation</p>
+<p>if you have multiple Python versions (2, 3) installed use the Python launcher</p>
+<pre><code>pip install [package]</code></pre>
+<pre><code>py -2 -m pip install [package]</code></pre>
+<pre><code>py -3 -m pip install [package]</code></pre>
+<pre><code>python [script.py]</code></pre>
+<pre><code>py -2 [script.py]</code></pre>
+<pre><code>py -3 [script.py]</code></pre>
+
+<h3>Install Python packages</h3>
+<p>go to folder: <code>backend</code></p>
+<pre><code>pip install -r requirements.txt</code></pre>
+
+<h3>Install MS SQL Server 2012</h3>
+<p>
+  <a href="https://www.microsoft.com/en-us/download/details.aspx?id=43351">link</a>
+</p>
+<p>
+  select SQLEXPRWT_x64_ENU.exe
+</p>
+
+<p>
+   Select mixed mode authentication for SQL Server
+</p>
+
+<h3>Setup SQL Server</h3>
+<p>
+  Start SQL Server Management Studio
+</p>
+<p>
+  Authentication: SQL Server Authentication
+</p>
+<p>
+  login with user: sa and the password set during the installation
+</p>
+<p>
+  Create new login (Security-Logins)
+</p>
+
+<p>
+  Restore the database from a backup (backup, restore)
+</p>
+
+<p>
+  Edit user settings from Security-Logins, User Mapping, check database, add database role membership (db_datareader, db_datawriter)
+</p>
+
+<h3>Install pyodbc</h3>
+<p>
+  Configure development environment for pyodbc
+  <a href="https://docs.microsoft.com/en-us/sql/connect/python/pyodbc/step-1-configure-development-environment-for-pyodbc-python-development">link</a>
+</p>
+<p>
+  Install ODBC Driver for SQL server <a href="https://docs.microsoft.com/en-us/sql/connect/odbc/download-odbc-driver-for-sql-server">link</a>
+</p>
+
+
+<!--
+<h3>[Monitor App] Install Numpy</h3>
+<p>download latest version (.whl) from <a href="https://pypi.python.org/pypi/numpy">https://pypi.python.org/pypi/numpy</a></p>
+<p>e.g. <code>numpy-1.13.1+mkl-cp36-cp36m-win32.whl</code></p>
+<pre><code>pip install numpy-1.13.1+mkl-cp36-cp36m-win32.whl</code></pre>
+<p>It may require Microsoft Visual C++ 14.0 to be installed (check output for errors)</p>
+<p><a href="http://landinghub.visualstudio.com/visual-cpp-build-tools">http://landinghub.visualstudio.com/visual-cpp-build-tools</a></p>
+
+<h3>[Monitor App] Install OpenCV</h3>
+<p>download latest version (.whl) from <a href="https://pypi.python.org/pypi/opencv-python">https://pypi.python.org/pypi/opencv-python</a> </p>
+<p>e.g. <code>opencv_python-3.2.0-cp36-cp36m-win32.whl</code></p>
+<p>it can work with both opencv 2 and 3</p> -->
+
+<h3>Run the app</h3>
+<h4>v1</h4>
+<p>go to folder: <code>backend</code></p>
+<pre><code>python server.py</code></pre>
+<p>open browser (Chrome is recommended), <a href="http://localhost:5000">localhost:5000</a> for WebHiL, <a href="http://localhost:5100">localhost:5100</a> for Monitor App</p>
+<h4>v2 - use a windows script from <code>utils</code> folder</h4>
+<p><code>run_app.bat</code></p>
+
+
+<h2><a name="installing-the-app-for-dev">Installing the app for development</a></h2>
+
+<h3>Install the app</h3>
+<p>as in <a href="#installing-the-app-for-running">Installing the app for running</a></p>
+<h3>Checkout from svn</h3>
+<p>frontend</p>
+
+<h3>Install Node.js and npm</h3>
+<p><a href="https://nodejs.org/en/download/">https://nodejs.org/en/download/</a></p>
+<p>windows installer 64-bit</p>
+<p>(!) Check add to path during the instalation</p>
+<p>restart or log out/log in</p>
+<p>the <code>npm</code> command should work from the cmd opened in the working folder</p>
+
+<h3>Install git (if required by npm)</h3>
+<p><a href="https://git-scm.com/download/win">https://git-scm.com/download/win</a></p>
+<p>restart or log out/log in</p>
+
+<h3>Install build tools and required dependencies</h3>
+<p>go to folder: <code>frontend</code></p>
+<pre><code>npm install</code></pre>
+<p>Install Lineman</p>
+<p><a href="http://linemanjs.com/">http://linemanjs.com/</a></p>
+<pre><code>npm install -g lineman</code></pre>
+
+<p>Install Bower</p>
+<p><a href="https://bower.io/">https://bower.io/</a></p>
+<pre><code>npm install -g bower</code></pre>
+
+<h3>Install frontend libraries</h3>
+<p>go to folder: <code>frontend\vendor</code></p>
+<pre><code>bower install</code></pre>
+
+<h3>Install the development tools</h3>
+<p>Atom - frontend IDE</p>
+<p>PyCharm - Python IDE</p>
+
+<h3>Run the development environment</h3>
+<h4>v1</h4>
+<p>start Atom and open <code>frontend</code> folder</p>
+<p>start PyCharm and open <code>backend</code> folder</p>
+<p>start lineman server in the <code>frontend</code> folder</p>
+<pre><code>lineman run</code></pre>
+<p>start Python server from PyCharm</p>
+<p>open browser (Chrome), <a href="http://localhost:8086">localhost:8086</a></p>
+
+<h4>v2 - use a windows script from <code>utils</code> folder</h4>
+<p><code>run_dev.bat</code></p>
+
+
+<h2><a name="dev">Development tips</a></h2>
+<h3>Test setup</h3>
+<p>
+  run simulated device: modules/test/start_test.bat
+</p>
+
+<h2><a name="other">Other</a></h2>
+<h3>Running code analysis for Python backend</h3>
+<p>Install <code>pylint</code></p>
+<pre><code>pylint [name of Python module/package]</code></pre>
+
+<h3>Building the app for release</h3>
+<p>go to folder: <code>frontend</code></p>
+<pre><code>lineman build</code></pre>
+<p>copy contents from folder: <code>frontend\dist</code> to folder <code>backend\static</code></p>
+<p>Then the new app can be run as in <a href="#installing-the-app-for-running">Installing the app for running</a></p>

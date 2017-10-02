@@ -1,0 +1,10 @@
+<!-- {{metadata}} -->
+<div ng-if="metadata.type==='temperature'" layout="column">
+  <raspi-level value="value" color="#ff5050" caption="{{metadata.type}}" size="{width:widgetWidth,height:widgetHeight}" range="[metadata.minValue,metadata.maxValue]"></raspi-level>
+</div>
+<div ng-if="metadata.type==='humidity'" layout="column">
+  <raspi-level value="value" color="#90CAF9" caption="{{metadata.type}}" size="{width:widgetWidth,height:widgetHeight}" range="[metadata.minValue,metadata.maxValue]"></raspi-level>
+</div>
+<!-- <div ng-if="type==='other'">
+    <raspi-gauge-minimal size="{width:widgetWidth*1.5,height:widgetHeight}" color="#5C6BC0" range="[metadata.minValue,metadata.maxValue]" style="text-align:center;" value="value"></raspi-gauge-minimal>
+  </div> -->

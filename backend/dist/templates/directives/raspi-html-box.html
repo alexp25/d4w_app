@@ -1,0 +1,8 @@
+<div animate class="raspi-directive-border" flex ng-if="html === undefined">
+  <md-progress-linear md-mode="indeterminate"></md-progress-linear>
+</div>
+<div ng-if="html !== undefined && html !== ''">
+  <h4 class="raspi-h4">{{caption}}</h4>
+  <!--<div class="raspi-directive-content md-primary" style="text-align:center;">-->
+  <div class="raspi-directive-content md-primary" style="text-align:center; font-size:16px;" ng-bind-html="html | sanitize"></div>
+</div>

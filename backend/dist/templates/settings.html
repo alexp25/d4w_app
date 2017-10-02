@@ -1,0 +1,35 @@
+<div class="raspi-frame md-primary" ng-init="init();" layout="column">
+  <div layout-gt-md="row" layout="column" layout-align="space-between center" layout-align-gt-md="space-between start">
+
+    <div layout="column" class="raspi-button-holder">
+      <md-button aria-label="" class="md-primary" ng-click="getSettings();">Load settings</md-button>
+      <md-button aria-label="" class="md-primary" ng-click="postSettings();">Save settings</md-button>
+    </div>
+
+    <div layout="column" flex>
+      <div ng-if="settings.model!==undefined" ng-repeat="s in settings.model.app track by s.name">
+
+        <md-input-container>
+          <span ng-if="s.type!=='check'" class="raspi-label-s">{{s.caption}}
+          </span>
+          <input ng-if="s.type==='text'" class="raspi-numeric-input-m md-primary" ng-model="settings.data[s.name]" type="text"></input>
+          <input ng-if="s.type==='numeric'" class="raspi-numeric-input-m md-primary" ng-model="settings.data[s.name]" type="number"></input>
+
+          <md-checkbox ng-if="s.type==='check'" aria-label="cb" ng-model="settings.data[s.name]">
+            <span class="raspi-label-s">{{s.caption}}
+            </span>
+          </md-checkbox>
+        </md-input-container>
+
+      </div>
+      <div layout="column" style="width:300px"></div>
+    </div>
+
+
+      <!-- <div simple-grid="myGridConfig"></div> -->
+
+  </div>
+  <div animate class="raspi-directive-border" flex ng-if="!hasData" style="width:100%;">
+    <md-progress-linear md-mode="indeterminate"></md-progress-linear>
+  </div>
+</div>

@@ -1,0 +1,68 @@
+<div class="raspi-frame md-primary" layout="column" ng-init="init();">
+  <raspi-html-box flex html="jsondata.info"></raspi-html-box>
+
+  <div layout-gt-md="row" layout="column" layout-align="space-between center" layout-align-gt-md="space-between start">
+
+    <div layout="column" flex>
+      <label class="raspi-label-m">Select node</label>
+
+      <!-- <select class="raspi-numeric-input-m md-primary" ng-model="selectedNodeId">
+          <option ng-repeat="node in clientList track by node.id" value="{{node.id}}">{{node.id}}</option>
+        </select> -->
+      <md-input-container>
+        <md-select ng-model="selectedNodeId">
+          <md-option ng-repeat="node in clientList track by $index" ng-value="node.id">
+            {{node.id}}
+          </md-option>
+        </md-select>
+      </md-input-container>
+
+      <h4 class="raspi-label-m">Settings</h4>
+      <md-divider></md-divider>
+
+      <div ng-if="showCmd">
+        <div ng-repeat="cmd in selectedNode.commands track by $index" layout="row">
+          <md-input-container flex ng-if="cmd.type==='slider'">
+            <span class="raspi-label-s">{{cmd.name}}</span>
+            <rzslider rz-slider-model="cmd.value" rz-slider-options="{id: cmd.code, floor: cmd.minValue, ceil: cmd.maxValue, onChange: sliderOnChange};"></rzslider>
+            <!-- <md-slider flex ng-if="cmd.type==='slider'" min="{{cmd.minValue}}" max="{{cmd.maxValue}}" ng-model="cmd.value" ng-change="sendData('DEVICE_CMD',{'nodeId':selectedNode.id,'fback':cmd.code.toString()+','+cmd.value.toString()});" aria-label="Slider"></md-slider> -->
+          </md-input-container>
+
+          <md-input-container flex ng-if="cmd.type==='value'">
+            <span class="raspi-label-s">{{cmd.name}}</span>
+            <input class="raspi-numeric-input-s md-primary" ng-model="cmd.value" type="number"></input>
+          </md-input-container>
+          <md-input-container flex ng-if="cmd.type==='array'">
+            <span class="raspi-label-s">{{cmd.name}}</span>
+            <input class="raspi-numeric-input-s md-primary" ng-model="cmd.value" type="text"></input>
+          </md-input-container>
+
+          <md-button flex ng-if="cmd.type==='cmd'" class="md-primary" ng-click="sendData('DEVICE_CMD',{'nodeId':selectedNode.id,'fback':cmd.code.toString()+','});">{{cmd.name}}</md-button>
+          <md-button ng-if="cmd.type!=='cmd'" aria-hidden="true" class="md-icon-button" ng-click="sendData('DEVICE_CMD',{'nodeId':selectedNode.id,'fback':cmd.code.toString()+','+cmd.value});">
+            <!-- <i class="fa fa-paper-plane" aria-hidden="true"></i> -->
+            <md-icon class="fa fa-paper-plane"></md-icon>
+          </md-button>
+        </div>
+      </div>
+
+    </div>
+    <div layout="column" flex>
+
+      <md-content>
+        <div ng-if="dataFlag" ng-repeat="client in clientList track by $index">
+          <div layout="column" class="md-primary">
+            <md-card md-theme="{{ settings.darkTheme ? 'dark-indigo' : 'default' }}" md-theme-watch>
+              <div layout="column" class="raspi-padding">
+                <label class="raspi-label-m">[{{client.id}}] {{client.info.type}}.{{client.info.class}} @ {{client.ip}}</label>
+                <sensor-gd-obj-simple object="client.sdata" graphic="settings.displayGraphicWidgets" widget-height="150"></sensor-gd-obj-simple>
+              </div>
+              <md-divider></md-divider>
+            </div>
+          </md-card>
+        </div>
+      </md-content>
+
+    </div>
+  </div>
+
+</div>

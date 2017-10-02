@@ -1,0 +1,75 @@
+<div class="esri-view-container" layout="column" ng-init="init();">
+
+  <!-- this directive is available from angular-esri-map -->
+
+  <div class="esri-view-50" id="mapViewDiv">
+    <esri-map-view map="map" on-create="onViewCreated" view-options="mapViewOptions"></esri-map-view>
+  </div>
+  <!-- <esri-scene-view  map="map" view-options="{scale: 50000000, center: [-101.17, 21.78]}"></esri-scene-view> -->
+  <div class="raspi-frame" layout="row">
+    <!-- <p>These properties are updated directly by the MapView:</p> -->
+    <div flex layout="column">
+      <ul>
+        <li>
+          <strong>Lat:</strong>
+          {{ mapView.center.latitude | number:3 }},
+          <strong>Lng:</strong>
+          {{ mapView.center.longitude | number:3 }}</li>
+        <li>
+          <strong>Scale:</strong>
+          {{ mapView.scale | number:2 }}</li>
+        <li>
+          <strong>Zoom:</strong>
+          {{ mapView.zoom | number:2 }}</li>
+      </ul>
+      <span class="raspi-label-s" ng-if="selected.type!==''">
+        selected element
+        {{selected.id}}
+        of type
+        {{selected.type}}
+
+        <span ng-if="selected.sensorId!==undefined">
+          sensor id
+          {{selected.sensorId}}
+        </span>
+
+      </span>
+      <span class="raspi-label-s" ng-if="selected.type===''">
+        select a node
+      </span>
+
+      <!-- <raspi-gauge-minimal value="jsondata.value" ng-if="mapLoaded" size="{height:200}" update="chupdate"></raspi-gauge-minimal> -->
+      <!-- <span class="raspi-label-m">{{jsondata.value}}</span> -->
+
+      <canvas id="numericDisplay" width="260" height="140" style="width:200px;">
+        Your browser is unfortunately not supported.
+      </canvas>
+    </div>
+
+    <!-- <p>This property can be changed by interacting with the input form
+        <strong>and</strong>
+        the MapView:</p>
+      <ul>
+        <li>
+          <strong>Rotation:</strong>
+          <input ng-model="mapView.rotation" type="number"/></li>
+      </ul> -->
+    <!-- {{selected}} -->
+    <!-- <div class="raspi-margin"> -->
+    <div>
+      <!-- <div style="max-height:200px;width:200px;"> -->
+      <raspi-plain-chart data="chartData" ng-if="mapLoaded" options="chart[0].options" size="{height:200}"></raspi-plain-chart>
+      <!-- </div> -->
+    </div>
+    <!-- </div> -->
+  </div>
+
+  <!-- <div ng-if="viewMode==='chart'">
+    <raspi-plain-chart array="[dataArray]" ng-if="mapLoaded" options="chart[0].options" update="chupdate"></raspi-plain-chart>
+  </div> -->
+
+  <!-- <zoom-buttons view-ui-position="{
+    position: 'bottom-left'
+  }" view="map"></zoom-buttons> -->
+
+</div>

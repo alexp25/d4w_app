@@ -1,0 +1,37 @@
+<div layout="column" ng-init="init();">
+  <div class="raspi-frame" layout="column">
+    <!-- <span class="raspi-label-m">{{jsondata}}</span> -->
+
+    <div layout="column" ng-if="jsondata!==undefined">
+      <span class="raspi-label-m">Sensor data</span>
+      <table at-config="config1" at-list="jsondata.sensors" at-paginated at-table class="table table-striped">
+        <thead></thead>
+        <tbody>
+          <tr>
+            <td at-attribute="type" at-implicit at-initial-sorting="asc" at-sortable width="150"></td>
+            <td at-attribute="id" at-implicit at-sortable width="150"></td>
+            <td at-attribute="value" at-implicit at-sortable width="150"></td>
+            <td at-attribute="ts" at-implicit width="150"></td>
+          </tr>
+        </tbody>
+      </table>
+      <at-pagination at-config="config1" at-list="jsondata.sensors"></at-pagination>
+
+      <span class="raspi-label-m">Measuring devices</span>
+      <table at-config="config2" at-list="jsondata.devices" at-paginated at-table class="table table-striped">
+        <thead></thead>
+        <tbody>
+          <tr>
+            <td at-attribute="ip" at-implicit at-sortable width="150"></td>
+            <td at-attribute="id" at-implicit at-initial-sorting="asc" at-sortable at-sortable width="150"></td>
+            <td at-attribute="in" at-implicit></td>
+            <td at-attribute="counter_rx" at-implicit width="150"></td>
+          </tr>
+        </tbody>
+      </table>
+      <at-pagination at-config="config2" at-list="jsondata.devices"></at-pagination>
+    </div>
+
+  </div>
+
+</div>
