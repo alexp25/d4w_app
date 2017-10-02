@@ -1,0 +1,25 @@
+{
+  "name": "lineman-angular-template",
+  "title": "An HTML/JS/CSS app using Angular.JS",
+  "version": "0.0.1",
+  "private": true,
+  "author": {
+    "name": "John Doe",
+    "company": "ACME, Inc."
+  },
+  "devDependencies": {
+    "coffee-script": "^1.6.3",
+    "jasmine-given": "^2.6.2",
+    "lineman": "^0.37.0",
+    "lineman-angular": "^0.3.0",
+    "lineman-less": "0.0.1",
+    "protractor": "^1.4.0"
+  },
+  "scripts": {
+    "start": "lineman run",
+    "test": "lineman spec-ci"
+  },
+  "dependencies": {
+    "angular-chart.js": "^1.1.1"
+  }
+}

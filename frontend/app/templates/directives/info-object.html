@@ -1,0 +1,23 @@
+<label class="raspi-label-m" style="text-align:start;" ng-if="caption!==undefined;">{{caption}}</label>
+<div class="animate-element-if">
+  <div animate class="raspi-directive-border" ng-if="!object">
+    <md-progress-linear md-mode="indeterminate"></md-progress-linear>
+  </div>
+  <div class="raspi-directive-content md-primary" layout="column">
+
+    <div ng-repeat="(key,value) in object">
+      {{key}}:
+      {{value}}
+    </div>
+
+    <!-- <tr ng-repeat="(key, value) in object">
+      <td>
+        {{key}}
+      </td>
+      <td>
+        {{ value }}
+      </td>
+    </tr> -->
+
+  </div>
+</div>

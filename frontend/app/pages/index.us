@@ -1,0 +1,74 @@
+<!-- {% raw %} -->
+<!DOCTYPE html>
+<html ng-app="app">
+
+<head>
+  <meta charset="utf-8">
+  <meta content="initial-scale=1,maximum-scale=1,user-scalable=no" name="viewport">
+  <title>AngularJS Esri Quick Start</title>
+
+
+  <!-- <link href="//js.arcgis.com/4.2/esri/css/main.css" rel="stylesheet"> -->
+
+  <!-- light (default)
+  dark
+  light-blue
+  dark-blue
+  light-green
+  dark-green
+  light-purple
+  dark-purple
+  light-red
+  dark-red -->
+
+  <link rel="stylesheet" href="https://js.arcgis.com/4.3/esri/themes/light/main.css">
+
+  <link rel="stylesheet" href="css/app.css">
+
+  <script src="libs/socket.io.js"></script>
+
+  <!-- load Esri JSAPI -->
+  <script src="//js.arcgis.com/4.3/"></script>
+  <!-- <script src="libs/arcgis_js_v43_api/4.3/4.3/init.js"></script> -->
+  <script src="libs/jquery/dist/jquery.js" type="text/javascript"></script>
+  <script src="libs/angular/angular.js" type="text/javascript"></script>
+  <script src="libs/SegmentDisplay/segment-display.js" type="text/javascript"></script>
+
+<!-- concatenated app files -->
+  <script src="js/app.js"></script>
+
+
+  <!-- load angular-esri-map -->
+  <script src="//unpkg.com/angular-esri-map@2"></script>
+</head>
+
+<body ng-controller="navigationCtrl" ng-init="init();">
+  <md-content class="esri-view-container" layout="column">
+    <div id="nav">
+      <md-tabs flex class="md-primary" id="tab-lvl1" md-autoselect="false" md-border-bottom md-center-tabs="false" md-dynamic-height md-selected="tabSelection.lvl1">
+        <md-tab ng-repeat="section in menuList">
+          <md-tab-label>{{section.name}}
+            <i class="{{section.icon}}"></i>
+          </md-tab-label>
+        </md-tab>
+      </md-tabs>
+      <div ng-if="!menuList[tabSelection.lvl1].url && menuList[tabSelection.lvl1].hasOwnProperty('subSections')">
+        <md-tabs id="tab-lvl2" class="md-accent" md-autoselect="false" md-border-bottom md-center-tabs="false" md-dynamic-height md-selected="tabSelection.lvl2">
+          <md-tab ng-disabled="!authenticated" ng-repeat="subSection in menuList[tabSelection.lvl1].subSections">
+            <md-tab-label>{{subSection.name}}
+              <i class="{{subSection.icon}}"></i>
+              <i ng-class="{'fa fa-lock':!authenticated}"></i>
+            </md-tab-label>
+          </md-tab>
+        </md-tabs>
+      </div>
+    </div>
+
+    <div class="esri-view-container" ui-view="content"></div>
+
+  </md-content>
+
+</body>
+
+</html>
+<!-- {% endraw %} -->

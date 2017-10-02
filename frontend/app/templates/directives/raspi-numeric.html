@@ -1,0 +1,15 @@
+<div animate flex ng-if="items === undefined">
+  <md-progress-linear md-mode="indeterminate"></md-progress-linear>
+</div>
+
+<div ng-if="items !== undefined">
+  <h4 class="raspi-label-m" style="text-align:center;">{{caption}}</h4>
+  <div class="raspi-directive-content md-primary">
+    <div class="raspi-value-display" ng-if="items.hasOwnProperty('value')">
+      {{items.value}} {{sx}}
+    </div>
+    <div class="raspi-value-display" ng-if="!items.hasOwnProperty('value')">
+      {{items}} {{sx}}
+    </div>
+  </div>
+</div>

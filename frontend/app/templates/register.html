@@ -1,0 +1,48 @@
+<div class="raspi-page" layout="column">
+
+  <h1 style="text-align:center;">Alex Smart Home</h1>
+  <h4 class="raspi-h4" style="text-align:center;">Register</h4>
+
+  <!--<h4 class="raspi-h4" ng-show="error" style="text-align:center; color:red;">{{errorMessage}}</h4>-->
+
+  <div class="center-element">
+    <!--ng-submit    placeholder-->
+    <!-- <form class="form" ng-submit="register();" name="registerForm1" layout="column"> -->
+    <form class="form" name="registerForm1" layout="column">
+
+      <md-input-container>
+        <!-- <span class="raspi-label-s">Username</span> -->
+        <label class="raspi-label-s">Username</label>
+        <input class="form-control raspi-padding" name="username" ng-model="newUser.username" required type="text">
+      </md-input-container>
+      <md-input-container>
+        <label class="raspi-label-s">Email</label>
+        <input class="form-control raspi-padding" name="email" ng-model="newUser.email" required type="email">
+      </md-input-container>
+      <div ng-messages="registerForm1.email.$error">
+        <!-- <div class="error-msg" ng-message="required">This field is required</div> -->
+        <div class="error-msg" ng-message="email">This field must be a valid email address.</div>
+      </div>
+
+      <!-- <div class="raspi-margin" layout="column">
+        <md-button class="md-primary" style="min-width:150px;" type="submit">Register</md-button>
+      </div> -->
+      <div class="raspi-margin" layout="column">
+        <md-button class="md-primary" style="min-width:150px;" ng-click="register();">Register</md-button>
+      </div>
+    </form>
+
+    <div layout="column">
+      <!--<md-button class="md-primary" style="min-width:150px;">Register</md-button>-->
+      <a ng-click="goToLogin();" class="btn btn-link">Login</a>
+      <!-- <div style="text-align:center">
+        <h4 class="raspi-h4">Cookies must be enabled in your browser</h4>
+      </div> -->
+    </div>
+  </div>
+
+  <div animate class="raspi-directive-border" flex ng-if="!hasData" style="width:100%;">
+    <md-progress-linear md-mode="indeterminate"></md-progress-linear>
+  </div>
+
+</div>

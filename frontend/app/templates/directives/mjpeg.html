@@ -1,0 +1,33 @@
+
+<html>
+  <head><base target="_parent"/>
+    <style type="text/css">
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+        height: 100%;
+        width: 100%;
+      }
+    </style>
+    <script>
+      function resizeParent() {
+        var ifs = window.top.document.getElementsByTagName("iframe");
+        for (var i = 0, len = ifs.length; i < len; i++) {
+          var f = ifs[i];
+          var fDoc = f.contentDocument || f.contentWindow.document;
+          if (fDoc === document) {
+            f.height = 0;
+            f.height = document.body.scrollHeight;
+            console.log('doc height (resizing iframe to fit the img): ',f.height);
+            //f.height = $(document.body).height();
+
+          }
+        }
+      }
+      
+    </script>
+  </head>
+  <body onresize="resizeParent()"><img onload="resizeParent()" src="">
+    <style="width: 100%; height: auto" onload="resizeParent()"/></body>
+</html>

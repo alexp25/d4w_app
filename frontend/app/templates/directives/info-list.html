@@ -1,0 +1,16 @@
+
+<label class="raspi-label-m" style="text-align:start;" ng-if="caption!==undefined;">{{caption}}</label>
+<div class="animate-element-if">
+  <div animate class="raspi-directive-border" ng-if="!items">
+    <md-progress-linear md-mode="indeterminate"></md-progress-linear>
+  </div>
+  <div class="raspi-directive-content md-primary">
+    <div ng-repeat="item in items">
+      <div layout-align="space-between center" layout="row">
+        <div>{{item.name | uppercase}}:</div>
+        <div>{{item.value}}</div>
+      </div>
+      <md-divider></md-divider>
+    </div>
+  </div>
+</div>

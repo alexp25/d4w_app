@@ -1,0 +1,83 @@
+<div layout="column" ng-init="init();">
+  <div class="raspi-frame" layout="column">
+    <!-- <span class="raspi-label-m">{{jsondata}}</span> -->
+
+    <div layout="column" ng-if="jsondata!==undefined">
+      <span class="raspi-label-m">Sensor data</span>
+      <div ng-if="uiTable">
+        <table at-config="config1" at-list="jsondata.sensors" at-paginated at-table class="table table-striped">
+          <thead></thead>
+          <tbody>
+            <tr>
+              <td at-attribute="type" at-implicit at-initial-sorting="asc" at-sortable width="150"></td>
+              <td at-attribute="id" at-implicit at-sortable width="150"></td>
+              <td at-attribute="value" at-implicit width="150"></td>
+              <td at-attribute="value1" at-implicit width="150"></td>
+              <td at-attribute="value2" at-implicit width="150"></td>
+              <td at-attribute="ts" at-implicit width="150"></td>
+            </tr>
+          </tbody>
+        </table>
+        <at-pagination at-config="config1" at-list="jsondata.sensors"></at-pagination>
+      </div>
+      <div ng-if="!uiTable">
+        <table style="width:100%;">
+          <tr layout="row">
+            <th flex>type</th>
+            <th flex>id</th>
+            <th flex>value</th>
+            <th flex>ts</th>
+          </tr>
+
+          <tr ng-repeat="sensor in jsondata.sensors" layout="row">
+            <td flex>{{sensor.type}}</td>
+            <td flex>{{sensor.id}}</td>
+            <td flex>{{sensor.value2}}</td>
+            <td flex>{{sensor.ts}}</td>
+          </tr>
+
+        </table>
+      </div>
+
+      <span class="raspi-label-m">Measuring devices</span>
+      <div ng-if="uiTable">
+        <table at-config="config2" at-list="jsondata.devices" at-paginated at-table class="table table-striped">
+          <thead></thead>
+          <tbody>
+            <tr>
+              <td at-attribute="ip" at-implicit at-sortable width="150"></td>
+              <td at-attribute="id" at-implicit at-initial-sorting="asc" at-sortable at-sortable width="150"></td>
+              <td at-attribute="in" at-implicit></td>
+              <td at-attribute="counter_rx" at-implicit width="150"></td>
+            </tr>
+          </tbody>
+        </table>
+        <at-pagination at-config="config2" at-list="jsondata.devices"></at-pagination>
+      </div>
+
+
+      <div ng-if="!uiTable">
+        <table style="width:100%;">
+          <tr layout="row">
+            <th flex>ip</th>
+            <th flex>type</th>
+            <th flex>id</th>
+            <th flex>in</th>
+            <th flex>rx counter</th>
+          </tr>
+
+          <tr ng-repeat="device in jsondata.devices" layout="row">
+            <td flex>{{device.ip}}</td>
+            <td flex>{{device.type}}</td>
+            <td flex>{{device.id}}</td>
+            <td flex>{{device.in}}</td>
+            <td flex>{{device.counter_rx}}</td>
+          </tr>
+
+        </table>
+      </div>
+    </div>
+
+  </div>
+
+</div>

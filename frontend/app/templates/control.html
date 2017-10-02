@@ -1,0 +1,155 @@
+<div layout="column" ng-init="init();">
+  <div class="raspi-frame" layout="column">
+
+    <!-- <div layout="column" ng-if="jsondata!==undefined">
+      {{jsondata.info}}
+    </div> -->
+
+    <div layout="column">
+      <md-input-container>
+        <label class="raspi-label-s">Pump cmd</label>
+        <input class="raspi-padding" max="255" min="0" ng-change="" ng-model="control.pump" type="number">
+      </md-input-container>
+
+      <div layout="row">
+        <div flex id="slider1"></div>
+        <md-button class="md-primary" ng-click="setValue(1,control.pump); send({'reqtype':'control','pump':control.pump});">Send</md-button>
+      </div>
+    </div>
+
+    <div layout="column">
+      <md-input-container>
+        <label class="raspi-label-s">Ref</label>
+        <input class="raspi-padding" min="0" ng-change="" ng-model="control.ref" type="number">
+      </md-input-container>
+      <div layout="row">
+        <div flex id="slider2"></div>
+        <md-button class="md-primary" ng-click="setValue(2,control.ref); send({'reqtype':'control','ref':control.ref});">Send</md-button>
+      </div>
+    </div>
+
+    <div layout="column">
+      <md-input-container>
+        <label class="raspi-label-s">Sensor output</label>
+        <input class="raspi-padding" max="700" min="0" ng-change="" ng-model="jsondata.info.yk" type="number">
+      </md-input-container>
+
+      <div layout="row">
+        <div flex id="slider3"></div>
+        <md-button class="md-primary" ng-click=""></md-button>
+      </div>
+    </div>
+
+    <md-divider class="raspi-margin"></md-divider>
+    <div layout="row">
+      <div flex layout="column">
+        <label class="raspi-label-s">Log</label>
+        <md-button class="md-primary" ng-click="send({'reqtype':'control','log':true});">Start log</md-button>
+        <md-button class="md-primary" ng-click="send({'reqtype':'control','log':false});">Stop log</md-button>
+        <md-button class="md-primary" ng-click="downloadServerLog('/api/download/log');">Download log</md-button>
+      </div>
+      <div flex layout="column">
+        <label class="raspi-label-s">Mode</label>
+        <md-button class="md-primary" ng-click="send({'reqtype':'control','mode':0});">Manual</md-button>
+        <md-button class="md-primary" ng-click="send({'reqtype':'control','mode':1});">Auto</md-button>
+        <md-button class="md-primary" ng-click="send({'reqtype':'control','mode':2});">Ident/ramp</md-button>
+        <md-button class="md-primary" ng-click="send({'reqtype':'control','mode':3});">Ident/step</md-button>
+        <md-button class="md-primary" ng-click="send({'reqtype':'control','mode':4});">Ident/spab</md-button>
+        <md-button class="md-primary" ng-click="send({'reqtype':'control','mode':5});">Auto/step</md-button>
+      </div>
+
+      <div flex layout="column" ng-if="jsondata.controllers!==undefined">
+        <label class="raspi-label-s">Control type</label>
+        <md-radio-group ng-if="!jsondata.info.multi" ng-model="control.controller_selection">
+          <md-radio-button ng-repeat="option in jsondata.controller_names" ng-value="$index" required>
+            {{$index}}.
+            {{ option }}
+          </md-radio-button>
+        </md-radio-group>
+        <md-radio-group ng-if="jsondata.info.multi" ng-model="jsondata.info.controller_id">
+          <md-radio-button ng-repeat="option in jsondata.controller_names" ng-value="$index" required>
+            {{$index}}.
+            {{ option }}
+          </md-radio-button>
+        </md-radio-group>
+      </div>
+
+      <div flex layout="column">
+        <label class="raspi-label-s">Controller setup</label>
+        <md-button class="md-primary" ng-click="send({'reqtype':'control_setup','multi':false});">Simple</md-button>
+        <md-button class="md-primary" ng-click="send({'reqtype':'control_setup','multi':true});">Adaptive</md-button>
+      </div>
+
+      <div flex layout="row">
+        <div flex>
+          <label class="raspi-label-s">Models</label>
+          <div ng-if="jsondata!==undefined">
+            <table style="width:100%;">
+              <tr layout="row">
+                <th flex>n</th>
+                <th flex>y</th>
+                <th flex>e</th>
+              </tr>
+              <tr layout="row" ng-repeat="(key, value) in jsondata.info.models">
+                <td flex>
+                  {{key}}
+                </td>
+                <td flex>
+                  {{value.yk | number:0}}
+                </td>
+                <td flex>
+                  {{value.ek | number:0}}
+                </td>
+              </tr>
+            </table>
+          </div>
+        </div>
+        <div flex>
+          <label class="raspi-label-s">Controllers</label>
+          <div ng-if="jsondata!==undefined">
+            <table style="width:100%;">
+              <tr layout="row">
+                <th flex>n</th>
+                <th flex>u</th>
+                <th flex>a</th>
+              </tr>
+              <tr layout="row" ng-repeat="(key, value) in jsondata.info.controllers">
+                <td flex>
+                  {{key}}
+                </td>
+                <td flex>
+                  {{value.uk | number:0}}
+                </td>
+                <td flex>
+                  {{value.a | number:2}}
+                </td>
+              </tr>
+            </table>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <label class="raspi-label-s">Info</label>
+    <div ng-if="jsondata!==undefined">
+      <table style="width:100%;">
+        <tr layout="row">
+          <th flex>name</th>
+          <th flex>value</th>
+        </tr>
+        <tr layout="row" ng-if="!(['models','controllers'].includes(key))" ng-repeat="(key, value) in jsondata.info">
+          <td flex>
+            {{key}}
+          </td>
+          <td flex>
+            {{value}}
+          </td>
+        </tr>
+      </table>
+    </div>
+
+
+  </div>
+
+</div>

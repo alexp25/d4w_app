@@ -1,0 +1,14 @@
+<div animate class="raspi-directive-border" flex ng-if="text === undefined">
+  <md-progress-linear md-mode="indeterminate"></md-progress-linear>
+</div>
+<div ng-if="text !== undefined">
+  <h4 class="raspi-label-m" style="text-align:center;">{{caption}}</h4>
+  <div class="raspi-directive-content md-primary">
+    <div ng-if="align===undefined || align==='justify'" style="text-align: justify;  font-size:16px; word-break:break-all; ">
+      {{text}}
+    </div>
+    <div ng-if="align==='center'" style="text-align: center; font-size:16px; word-break:break-all; ">
+      {{text}}
+    </div>
+  </div>
+</div>
