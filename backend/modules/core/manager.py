@@ -37,16 +37,16 @@ class TestRunnerManager(Thread):
         self.hil_object_array = []
         self.hil_device_index = 0
         for dev in variables.appConfig["devices"]:
-            self.add_new_hil_device(dev["ip"])
+            self.add_new_hil_device(dev["ip"], dev["port"])
 
-    def add_new_hil_device(self, ip):
+    def add_new_hil_device(self, ip, port=9001):
         """
         add new hil device and test runner thread
         :param ip: ip
         """
 
-        variables.log2("[add_new_hil_device]", ip)
-        self.hil = HIL_socket(ip, 9001)
+        variables.log2("[add_new_hil_device]", ip + ":" + str(port))
+        self.hil = HIL_socket(ip, port)
 
         new_hil_object = {
             "function": {
@@ -55,6 +55,7 @@ class TestRunnerManager(Thread):
             "data": copy.deepcopy(Constants.hil_object_data_model)
         }
         new_hil_object["data"]["ip"] = ip
+        new_hil_object["data"]["port"] = port
         new_hil_object["data"]["index"] = self.hil_device_index
 
         self.hil_object_array.append(new_hil_object)

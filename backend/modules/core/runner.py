@@ -23,7 +23,7 @@ class TestRunner(Thread):
         self.hil_def = hil_def
         self.hil_socket = hil_def["function"]["socket"]
 
-        self.hil = HIL_socket(self.hil_def["data"]["ip"], 9001)
+        self.hil = HIL_socket(self.hil_def["data"]["ip"], self.hil_def["data"]["port"])
 
         self.t0 = time.time()
         self.t = self.t0
