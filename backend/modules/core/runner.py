@@ -3,7 +3,7 @@ import threading
 import time
 import traceback
 from threading import Thread
-
+import datetime
 from modules.api.HIL_socket_API import HIL_socket
 from modules.data import variables
 from modules.data.constants import Constants
@@ -29,7 +29,11 @@ class TestRunner(Thread):
         self.t = self.t0
         self.t_start = self.t0
         self.t_string = ""
-        self.TS = 0.5
+        self.TS = 0.1
+
+        self.log = True
+
+        # print(variables.sensorModel)
 
         self._stop_flag = threading.Event()
 
@@ -55,6 +59,50 @@ class TestRunner(Thread):
 
         self.t_string = "%.4f" % (time.time() - self.t_start)
 
+    def format_request(self):
+        reqmsg = "100"
+        if self.hil_def["data"]["info"] is not None:
+            if self.hil_def["data"]["info"]["type"] == 1:
+                # flow measurement node
+                reqmsg = "100,3"
+        return reqmsg
+
+    def update_sensor_data(self, id, value):
+        tm = datetime.datetime.now()
+        tim = time.time()
+        # print("update ", id)
+        for s in variables.sensorData:
+            if s['id'] == id:
+                s['value'] = value
+                s['value1'] = value
+                s['value2'] = value
+
+                if 'tim' in s:
+                    if (tim - s['tim']) < 3:
+                        s['recent'] = True
+                    else:
+                        s['recent'] = False
+                else:
+                    s['recent'] = False
+
+                s['tim'] = tim
+                s['ts'] = tm.strftime("%H:%M:%S.%f")
+                break
+
+    def get_response_data(self, resp):
+        device_data = variables.device_data[self.hil_def["data"]["index"]]
+        device_data["in"] = str(resp)
+        device_data["rx_counter"] += 1
+
+        for sensor_def in variables.sensorModel:
+            if self.hil_def["data"]["info"] is not None:
+                if self.hil_def["data"]["info"]["type"] == 1:
+                    for e in sensor_def['data']:
+                        try:
+                            self.update_sensor_data(e["id"], resp[e['pos']])
+                        except:
+                            pass
+
     def run_async(self):
         self.t = time.time()
         self.update_test_timer()
@@ -64,10 +112,19 @@ class TestRunner(Thread):
 
         if self.t - self.t0 >= self.TS:
             self.t0 = self.t
-            res = self.hil_socket.request('100')
-            print(res)
+            reqmsg = self.format_request()
+            t_req = time.time()
+            # variables.log2(self.__class__.__name__, 'sending to "%s" "%s"' % (self.hil_def["data"]["ip"], reqmsg))
+            res = self.hil_socket.request(reqmsg)
+            t_req = time.time() - t_req
+
+
+            if self.log:
+                variables.log2(self.__class__.__name__, 'recv from "%s" "%s", time ms "%d"' % (self.hil_def["data"]["ip"], res[1], t_req*1000))
             if res[0] == -1:
                 self.hil_socket.reset_connection()
+            else:
+                self.get_response_data(res[1])
 
 
 

@@ -31,15 +31,66 @@
 	"devices":[
 		{
 			"ip": "127.0.0.1",
-			"port": 9001
+			"port": 9001,
+			"info": {
+				"id":0,
+				"type":0
+			}
 		},
 		
 		{
 			"ip": "192.168.64.11",
-			"port": 23
+			"port": 23,
+			"info": {
+				"id": 1,
+				"type": 1
+			}
 		}
 	],
-	
+	"sensor_model": [{
+		"id": 1,
+		"data":[
+		{
+			"pos":1,
+			"id":1
+		},
+		{
+			"pos":2,
+			"id":2
+		},
+		{
+			"pos":3,
+			"id":3
+		},
+		{
+			"pos":4,
+			"id":5
+		},
+		{
+			"pos":5,
+			"id":6
+		},
+		{
+			"pos":6,
+			"id":7
+		},
+		{
+			"pos":7,
+			"id":8
+		},
+		{
+			"pos":8,
+			"id":9
+		},
+		{
+			"pos":9,
+			"id":10
+		},
+		{
+			"pos":10,
+			"id":11
+		}]
+	}],
 	"models":[
 		{"num":[0.3625],"den":[1,0.8187], "u_min":100, "y_min":0},
 		{"num":[0.2097],"den":[1,0.7903],"u_min":100, "y_min":0},
@@ -54,7 +105,7 @@
 	
 	"controller_names":["no_leak","leak_s5","leak_s11"],
 	
-	"db_selection": "db_for_upb",
+	"db_selection": "db_for_upb_server",
 
 	"db_for_upb": {
 		"server":"DESKTOP-OBL3M97\\SQLEXPRESS",

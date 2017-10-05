@@ -34,7 +34,7 @@ class HIL_socket:
         self.ip = ip
         self.port = port
 
-    def newSocket(self, timeout=1.5):
+    def newSocket(self, timeout=0.5):
         self.Socket = socket.socket(self.family, self.type)
         self.Socket.settimeout(timeout)
 
@@ -74,8 +74,9 @@ class HIL_socket:
         :return:
         """
         if self.debug_log:
-            variables.log2(self.__class__.__name__, 'sending to "%s" "%s"' % (self.ip, message))
+            # variables.log2(self.__class__.__name__, 'sending to "%s" "%s"' % (self.ip, message))
             # variables.log2(self.__class__.__name__, 'sending (parsed) to "%s" "%s"' % (self.ip, "".join("%s " % ("0x%0.2X" % tup) for tup in message)))
+            pass
         try:
             self.Socket.sendall(message)
             return 0
@@ -95,8 +96,9 @@ class HIL_socket:
         try:
             data = self.Socket.recv(bufsize)
             if self.debug_log:
-                variables.log2(self.__class__.__name__, 'received from "%s" "%s"' % (self.ip, data))
+                # variables.log2(self.__class__.__name__, 'received from "%s" "%s"' % (self.ip, data))
                 # variables.log2(self.__class__.__name__, 'received from "%s" "%s"' % (self.ip, "".join("%s " % ("0x%0.2X" % tup) for tup in data)))
+                pass
         except:
                 if self.debug_log:
                     variables.log2(self.__class__.__name__, traceback.format_exc())
@@ -119,8 +121,8 @@ class HIL_socket:
             return 1
 
     def request(self, tx_message):
-        if self.debug_log:
-            variables.log2(self.__class__.__name__, "get data")
+        # if self.debug_log:
+        #     variables.log2(self.__class__.__name__, "get data")
 
         self.send((tx_message+"\n").encode())
         rx_message = self.receive(buffSize)

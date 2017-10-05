@@ -89,7 +89,7 @@ def handle_get_data(jsondata):
         elif jsondata['type']==100:
             jsondata={
                 'sensors': variables.sensorData,
-                'devices': variables.clientList
+                'devices': variables.device_data
             }
     elif jsondata['reqtype']=='control':
         # jsondata={

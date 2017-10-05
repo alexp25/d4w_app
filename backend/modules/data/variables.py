@@ -46,75 +46,6 @@ def log2(source, message):
         del results["smallLog"][0]
         results["smallLog"].append(message)
 
-
-def add_checksum(msg):
-    msg1 = msg.split(",")
-    msgdata = [0] * len(msg1)
-    chksum=0
-    for i in range(len(msg1)):
-        msgdata[i] = int(msg1[i])
-        chksum += msgdata[i]
-    msg2 = str(msg) + ',' + str(chksum)
-
-    if(msgdata[0] not in [1,2,3,100,211]):
-        msginfo = "[add_checksum] " + msg2
-        if not qDebug1.full():
-            qDebug1.put(msginfo)
-
-    return msg2
-
-def getBoardData(bdata, array=False):
-    if not array:
-        bdata1 = bdata.split(",")
-        bdata2 = [int(val) for val in bdata1]
-    else:
-        bdata2 = bdata
-    # print('board data: ' + str(bdata2)
-    if len(bdata2)>1:
-        stype = bdata2[2]
-        # print(sensorData
-        for sensor_def in sensorModel:
-            # print(sensor_def['id']
-            if sensor_def['id'] == stype:
-                for e in sensor_def['data']:
-                    update_sensor_data(e['id'],bdata2[e['pos']])
-                break
-
-def update_sensor_data(id,value):
-    # print('update ' + str(id) + ' - ' + str(value)
-    tm = datetime.datetime.now()
-    tim = time.time()
-    for s in sensorData:
-        if s['id'] == id:
-            s['value'] = value
-            s['value1'] = value
-            s['value2'] = value
-            # if value==0:
-            #     s['value1'] = 0
-            #     s['value2'] = 0
-            # else:
-            #     # set a threshold for valid data (max 130 Hz ~ 1000 L/h)
-            #     if value >= 1750:
-            #         frequency=250000/value
-            #         s['value1'] = frequency
-            #         s['value2'] = int(7.77*frequency-14.8605)
-            #     else:
-            #         s['value1'] = 0
-            #         s['value2'] = 0
-            # print(value
-
-            if 'tim' in s:
-                if (tim - s['tim']) < 3:
-                    s['recent'] = True
-                else:
-                    s['recent'] = False
-            else:
-                s['recent'] = False
-
-            s['tim'] = tim
-            s['ts'] = tm.strftime("%H:%M:%S.%f")
-            break
-
 def log_sensor_data():
     line=''
     for s in sensorData:
@@ -131,12 +62,28 @@ def new_log():
     with open('log.csv','w') as f:
         f.write("")
 
+def load_app_data():
+    global spab_data
+    with open('config/prbs_sequence.txt') as f:
+        file_contents = f.read()
+    try:
+        spab_data = [int(s) for s in file_contents.split(",")]
+        # print(spab_data)
+    except:
+        exc_type, exc_value = sys.exc_info()[:2]
+        exceptionMessage = str(exc_type.__name__) + ': ' + str(exc_value)
+        msg = "spab file exception " + exceptionMessage
+        print(msg)
+
 def load_app_config():
-    global appConfig, model_data, controller_data, appFlags
+    global appConfig, sensorModel, model_data, controller_data, appFlags
     with open('config/config.json') as f:
         file_contents = f.read()
     try:
         appConfig = json.loads(file_contents)
+
+        sensorModel = appConfig["sensor_model"]
+
         appFlags['models'] = []
         appFlags['controllers'] = []
         for i in range(len(appConfig['models'])):
@@ -162,6 +109,10 @@ def init():
     global sensorModel
     global sensorData
 
+    global device_data
+
+
+
 
     global appFlags,appFlagsAux
 
@@ -175,6 +126,8 @@ def init():
 
     global results
 
+
+    device_data = []
     results = {
         "testRunning": 0,
         "inProgress": 0,
@@ -259,29 +212,10 @@ def init():
 
     appConfig = None
     # print('loading app config'
-    load_app_config()
-
-    with open('config/prbs_sequence.txt') as f:
-        file_contents = f.read()
-    try:
-        spab_data = [int(s) for s in file_contents.split(",")]
-        # print(spab_data)
-    except:
-        exc_type, exc_value = sys.exc_info()[:2]
-        exceptionMessage = str(exc_type.__name__) + ': ' + str(exc_value)
-        msg = "spab file exception " + exceptionMessage
-        print(msg)
 
     sensorModel = {}
-    with open('config/sensor_model.json') as f:
-        file_contents = f.read()
-    try:
-        sensorModel = json.loads(file_contents)
-    except:
-        exc_type, exc_value = sys.exc_info()[:2]
-        exceptionMessage = str(exc_type.__name__) + ': ' + str(exc_value)
-        msg = "sensor model file exception " + exceptionMessage
-        print(msg)
+    load_app_config()
+    load_app_data()
 
     # debug queue (print, tcp debugging)
     qLog = Queue(maxsize=10)
