@@ -15,4 +15,7 @@ class Constants:
         "rx_counter": 0
     }
 
+    NODE_PUMP = 101
+    NODE_FLOW_SENSOR = 1
+
 

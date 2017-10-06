@@ -1,12 +1,12 @@
 import copy
 import time
 import traceback
+import datetime
 from threading import Thread
 
 from modules.api.HIL_socket_API import HIL_socket
 from modules.core.runner import TestRunner
 from modules.data import variables
-from modules.data.constants import Constants
 from modules.data.constants import Constants
 
 
@@ -26,17 +26,19 @@ class TestRunnerManager(Thread):
     def __init__(self):
         # constructor
         Thread.__init__(self)
-        self.gateway = "127.0.0.1"
-        self.port = 9001
+        # self.mode = 'async'
+        self.mode = 'multi'
+        self.t0 = time.time()
+        self.t = self.t0
+        self.TS = variables.app_config["ts"]
+        self.TS_DB = variables.app_config["t_log"]
+        self.t0_db = self.t0
 
-        self.mode = 'async'
-
-        self.flag_run_ip_scan = False
 
         self.tr = []
         self.hil_object_array = []
         self.hil_device_index = 0
-        for dev in variables.appConfig["devices"]:
+        for dev in variables.app_config["devices"]:
             self.add_new_hil_device(dev["ip"], dev["port"], dev)
 
     def add_new_hil_device(self, ip, port=9001, dev = None):
@@ -86,71 +88,13 @@ class TestRunnerManager(Thread):
         self.tr = []
         print('hil device clear: stopped threads')
         self.hil_object_array = []
-        variables.results["availableList"] = []
         variables.deviceList = []
         self.hil_device_index = 0
 
-    def get_device_by_ip(self, ip):
-        for dev in self.hil_object_array:
-            if dev["data"]["def"]["ip"] == ip:
-                return dev
-        return None
-
-    def get_device_ip_from_index(self, id):
-        return self.hil_object_array[id]["data"]["def"]["ip"]
-
-    def get_first_device(self):
-        return self.hil_object_array[0]
-
-    def get_first_device_1(self):
-        return self.hil_object_array[0]
-
-
-    def run_ip_scan_exec(self, gateway, port):
-        """
-        Start network scan in the test runner thread
-        :param gateway: the gateway for the network that is to be scanned
-        :param port: the port of the tcp server running on each hil device
-        """
-        self.gateway = gateway
-        self.port = port
-        self.flag_run_ip_scan = True
-
-    def scan_network_for_devices(self, gateway, port):
-        """
-        Scan network for hil devices and adds them to the list of available devices
-        :param gateway: the gateway for the network that is to be scanned
-        :param port: the port of the tcp server running on each hil device
-        :return: the list of available devices
-        """
-        self.clear_hil_devices()
-        variables.appConfig["devices"] = []
-        time.sleep(1)
-
-        for dev in Constants.special_devices:
-            self.add_new_hil_device(dev)
-        # one hil device is added by default
-        variables.appConfig["devices"].append({"ip": "127.0.0.1"})
-        self.get_first_device()["function"]["socket"].close()
-        for i in range(2, 255):
-            self.get_first_device()["function"]["socket"].newSocket(timeout=0.1)
-            ip_split = gateway.split('.')
-            ip = ip_split[0] + '.' + \
-                 ip_split[1] + '.' + \
-                 ip_split[2] + '.' + \
-                 str(i)
-            variables.results['currentIpScan'] = ip
-            if self.get_first_device()["function"]["socket"].connect(ip, port) == 0:
-                # add device to api list
-                self.add_new_hil_device(ip)
-                variables.appConfig["devices"].append({"ip": ip})
-            self.get_first_device()["function"]["socket"].close()
-            if self.flag_stop_test_aux:
-                break
-        self.flag_stop_test_aux = False
-        self.flag_operation_in_progress = 0
-        variables.save_config()
-        return variables.results["availableList"]
+    def set_pump(self, value):
+        for (i, dev) in enumerate(variables.app_config["devices"]):
+            if dev["info"]["type"] == Constants.NODE_PUMP:
+                self.tr[i].send_data("1," + str(value))
 
     def run(self):
         """
@@ -161,22 +105,44 @@ class TestRunnerManager(Thread):
 
         while True:
             time.sleep(variables.LOOP_DELAY)
+            self.t = time.time()
             try:
-                # check user input
-                if self.flag_run_ip_scan and self.flag_operation_in_progress == 0:
-                    # blocking
-                    self.flag_run_ip_scan = False
-                    variables.log2('', "detected cmd: run ip scan")
-                    self.flag_operation_in_progress = 2
-                    variables.results["inProgress"] = self.flag_operation_in_progress
-                    self.scan_network_for_devices(self.gateway, self.port)
-                    self.flag_operation_in_progress = 0
+                if self.t - self.t0 >= self.TS:
+                    self.t0 = self.t
+                    if variables.app_flags['log'] == True:
+                        variables.log_sensor_data()
 
+                if variables.app_config['db_logging']:
+                    # database log
+                    # logging is done synchronously with latest data
+                    # even if data from sensors are slightly delayed
+                    # if a sensor is disconnected, the last value will not be
+                    # written in the database (if the timeout expires)
+                    if ((self.t - self.t0_db) > self.TS_DB):
+                        self.t0_db = self.t
+                        variables.log2(self.__class__.__name__, "save to db")
+
+                        for s in variables.sensor_data:
+                            # only save new data
+                            # do not save the same data multiple times in the database
+                            if 'recent' in s:
+                                if s['recent']:
+                                    s['recent'] = False
+                                    if variables.cnxn is not None:
+                                        cursor = variables.cnxn.cursor()
+                                        tm = datetime.datetime.now()
+                                        cursor.execute(
+                                            "insert into SensorData_Flow(Timestamp, Value, Pipe_ID) values (?, ?, ?)",
+                                            tm, s['value2'],
+                                            s['id'])
+                                        variables.cnxn.commit()
+                            s['recent'] = False
+
+                # manage runners
                 for (i, hil_def) in enumerate(self.hil_object_array):
                     if self.mode == 'async':
                         self.tr[i].run_async()
 
-                # variables.results["inProgress"] = self.flag_operation_in_progress
             except:
                 variables.log2(self.__class__.__name__, traceback.format_exc())
                 continue

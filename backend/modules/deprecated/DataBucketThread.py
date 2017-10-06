@@ -12,8 +12,8 @@ class DataBucketThread(Thread):
     def run(self):
         t0=time.time()
         Ts=0.1
-        Ts= variables.appConfig['ts']
-        Tlog= variables.appConfig['t_log']
+        Ts= variables.app_config['ts']
+        Tlog= variables.app_config['t_log']
         msg = "[DataBucketThread] " + "running"
         if not variables.qDebug1.full():
             variables.qDebug1.put(msg)
@@ -22,7 +22,7 @@ class DataBucketThread(Thread):
         t0_slow = tstart
         t0_data = tstart
 
-        db_logging = variables.appConfig['db_logging']
+        db_logging = variables.app_config['db_logging']
         # appVariables.clientListFcn[i]['t0_polling'] = tstart
         while True:
             try:
@@ -65,13 +65,13 @@ class DataBucketThread(Thread):
                 # basic i/o client operations
 
                 # write data
-                if variables.appFlagsAux['set_pump']:
-                    variables.appFlagsAux['set_pump']=False
-                    variables.appFlags['pump_cmd_time'] = time.time()
+                if variables.app_aux_flags['set_pump']:
+                    variables.app_aux_flags['set_pump']=False
+                    variables.app_flags['pump_cmd_time'] = time.time()
                     for i in range(len(variables.clientList)):
                         if not variables.clientListFcn[i]['q_out'].full():
                             if variables.clientList[i]['type'] == 11:
-                                variables.clientListFcn[i]['q_out'].put("2," + str(variables.appFlags['pump']))
+                                variables.clientListFcn[i]['q_out'].put("2," + str(variables.app_flags['pump']))
 
                 # read data
                 for i in range(len(variables.clientList)):
@@ -81,12 +81,12 @@ class DataBucketThread(Thread):
                             cdata = variables.clientListFcn[i]['q_in'].get(block=False)
                             # print(cdata['data'])
                             variables.getBoardData(cdata['data'], array=True)
-                            variables.appFlags['ts_sensor'] = int(1000 * (t1 - t0_data))
+                            variables.app_flags['ts_sensor'] = int(1000 * (t1 - t0_data))
 
-                            variables.appFlags['ts_sensor_avg'] = int(
-                                variables.appFlags['ts_sensor_avg'] * 0.9 + variables.appFlags['ts_sensor'] * 0.1)
+                            variables.app_flags['ts_sensor_avg'] = int(
+                                variables.app_flags['ts_sensor_avg'] * 0.9 + variables.app_flags['ts_sensor'] * 0.1)
                             t0_data = t1
-                            if variables.appFlags['log']==True:
+                            if variables.app_flags['log']==True:
                                 variables.log_sensor_data()
 
                 # database log
@@ -100,7 +100,7 @@ class DataBucketThread(Thread):
                     if not variables.qDebug1.full():
                         variables.qDebug1.put(msg)
 
-                    for s in variables.sensorData:
+                    for s in variables.sensor_data:
                         # only save new data
                         # do not save the same data multiple times in the database
                         if 'recent' in s:

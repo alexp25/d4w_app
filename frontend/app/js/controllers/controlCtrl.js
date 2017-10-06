@@ -13,125 +13,27 @@ angular.module('app').controller('controlCtrl', ['$scope', 'socket', '$timeout',
       controller_selection_id: 1
     };
 
-    // $scope.sliderOnChange = function(sliderId, modelValue, highValue, pointerType) {
-    //   $scope.send({
-    //     'reqtype': 'control',
-    //     'pump': modelValue
-    //   });
-    // };
-
-
-    $scope.$watch('control.controller_selection', function() {
-      console.log($scope.control.controller_selection);
-
-      $scope.send({
-        'reqtype': 'control',
-        'controller': $scope.control.controller_selection
-      });
-
-    });
-
-
-
-    $("#slider1").slider({
-      min: 0,
-      max: 255,
-      slide: function(event, ui) {
-        $scope.$apply(function() {
-          $scope.control.pump = ui.value;
-          $scope.send({
-            'reqtype': 'control',
-            'pump': ui.value
-          });
-        });
-      }
-    });
-
-
-    $("#slider2").slider({
-      min: 0,
-      max: 700,
-      slide: function(event, ui) {
-        $scope.$apply(function() {
-          $scope.control.ref = ui.value;
-          $scope.send({
-            'reqtype': 'control',
-            'ref': ui.value
-          });
-        });
-      }
-    });
-
-    $("#slider3").slider({
-      min: 0,
-      max: 700
-    });
-
-
-    $scope.setValue = function(slider, value) {
-      // Setter
-      if (slider === 1) {
-        $("#slider1").slider("option", "value", value);
-        if (($scope.jsondata.info.mode === undefined) || ($scope.jsondata.info.mode === 0)) {
-          $scope.send({
-            'reqtype': 'control',
-            'pump': value
-          });
-        }
-      } else if (slider === 2) {
-        $("#slider2").slider("option", "value", value);
-        if (($scope.jsondata.info.mode === undefined) || ($scope.jsondata.info.mode === 0)) {
-          $scope.send({
-            'reqtype': 'control',
-            'ref': value
-          });
-        }
-      } else if (slider === 3) {
-        $("#slider3").slider("option", "value", value);
-
-      }
+    $scope.test = function() {
+      console.log("test");
     };
 
-    var startPollingWs_socketio = function() {
+
+    var startPolling = function(delay) {
       $scope.timer[1] = $timeout(function() {
-        socket.emit('get_data', $scope.selected, function(data) {
-          startPollingWs_socketio();
-        });
-      }, 0);
+        if (socket.isConnected || true) {
+          socket.emit('get_data', $scope.selected);
+          // socket.emit('get_data', $scope.selected, function(data) {
+          //   startPollingWs_socketio();
+          // });
+          startPolling(delay);
+        }
+      }, delay);
     };
-    
+
     $scope.send = function(data) {
       socket.emit('post_data', data);
       console.log(data);
     };
-
-    var initSocket = function() {
-      socket.connect();
-      socket.on('get_data', function(data) {
-        $scope.jsondata = angular.fromJson(data);
-
-        // if ($scope.control.controller_selection === undefined) {
-        //   if ($scope.jsondata.controllers !== undefined) {
-        //     $scope.control.controller_selection = $scope.jsondata.controllers[0];
-        //   }
-        // }
-
-        if ($scope.jsondata.info.mode >= 1) {
-          $scope.control.pump = $scope.jsondata.info.pump;
-          $scope.setValue(1, $scope.jsondata.info.pump);
-        }
-        if ($scope.jsondata.info.mode === 5) {
-          $scope.control.ref = $scope.jsondata.info.ref;
-          $scope.setValue(2, $scope.jsondata.info.ref);
-        }
-
-        $scope.setValue(3, $scope.jsondata.info.yk);
-      });
-      startPollingWs_socketio();
-    };
-
-
-
 
     $scope.downloadServerLog = function(url) {
       var config = {
@@ -159,7 +61,28 @@ angular.module('app').controller('controlCtrl', ['$scope', 'socket', '$timeout',
 
     $scope.init = function() {
       $scope.timer[0] = $timeout(function() {
-        initSocket();
+
+        socket.connect();
+        socket.on('connect', function() {
+          console.log('connect event');
+          socket.emit('message', 'connection');
+        });
+
+        socket.on('disconnect', function() {
+          console.log('disconnect event');
+        });
+
+        socket.on('get_data', function(msg) {
+          $scope.jsondata = angular.fromJson(msg);
+          if ($scope.jsondata.info.mode >= 1) {
+            $scope.control.pump = $scope.jsondata.info.pump;
+          }
+          if ($scope.jsondata.info.mode === 5) {
+            $scope.control.ref = $scope.jsondata.info.ref;
+          }
+        });
+        startPolling(100);
+
       }, 1000);
     };
 

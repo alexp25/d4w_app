@@ -9,19 +9,6 @@ angular.module('app').controller('detailViewCtrl', ['$scope', 'socket', '$timeou
       id: 0
     };
 
-    var startPollingWs_socketio = function() {
-      $scope.timer[1] = $timeout(function() {
-        // socket.emit('get_data', {
-        //   message: ''
-        // }, function(data) {
-        //   startPollingWs_socketio();
-        // });
-
-        socket.emit('get_data', $scope.selected, function(data) {
-          startPollingWs_socketio();
-        });
-      }, 0);
-    };
 
     $scope.uiTable = false;
 
@@ -51,22 +38,38 @@ angular.module('app').controller('detailViewCtrl', ['$scope', 'socket', '$timeou
       center: [26.036, 44.492]
     };
 
-    var initSocket = function() {
-      socket.connect();
-      socket.on('get_data', function(data) {
-        $scope.jsondata = angular.fromJson(data);
-      });
-      startPollingWs_socketio();
+
+    var startPolling = function(delay) {
+      $scope.timer[1] = $timeout(function() {
+        if (socket.isConnected || true) {
+          socket.emit('get_data', $scope.selected);
+          // socket.emit('get_data', $scope.selected, function(data) {
+          //   startPollingWs_socketio();
+          // });
+          startPolling(delay);
+        }
+      }, delay);
     };
-
-
-
-
 
 
     $scope.init = function() {
       $scope.timer[0] = $timeout(function() {
-        initSocket();
+
+        socket.connect();
+        socket.on('connect', function() {
+          console.log('connect event');
+          socket.emit('message', 'connection');
+        });
+
+        socket.on('disconnect', function() {
+          console.log('disconnect event');
+        });
+
+        socket.on('get_data', function(msg) {
+          $scope.jsondata = angular.fromJson(msg);
+        });
+        startPolling(100);
+
       }, 1000);
     };
 

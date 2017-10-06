@@ -77,30 +77,25 @@ def handle_my_event(jsondata):
 
 @socketio.on('get_data')
 def handle_get_data(jsondata):
-    time.sleep(variables.appConfig['ts_disp'])
+    time.sleep(variables.app_config['ts_disp'])
     if jsondata['reqtype']=='sensors':
         jsondata['value']=None
-        if jsondata['type'] in [1,2]:
-            p = next((x for x in variables.sensorData if ((x['id'] == jsondata['sensorId']) and (x['type'] == jsondata['type']))), None)
+        if jsondata['type'] in [1, 2]:
+            p = next((x for x in variables.sensor_data if ((x['id'] == jsondata['sensorId']) and (x['type'] == jsondata['type']))), None)
             if p is not None:
                 jsondata['value'] = p['value']
                 jsondata['value1'] = p['value1']
                 jsondata['value2'] = p['value2']
         elif jsondata['type']==100:
             jsondata={
-                'sensors': variables.sensorData,
+                'sensors': variables.sensor_data,
                 'devices': variables.device_data
             }
     elif jsondata['reqtype']=='control':
-        # jsondata={
-        #     'pump':appVariables.appFlags['pump'],
-        #     'log':appVariables.appFlags['log'],
-        #     'log_time':appVariables.appFlags['log_time']
-        # }
         jsondata = {
-            "info": variables.appFlags,
-            "controllers": variables.appConfig['controllers'],
-            "controller_names": variables.appConfig['controller_names']
+            "info": variables.app_flags,
+            "controllers": variables.app_config['controllers'],
+            "controller_names": variables.app_config['controller_names']
         }
     # print jsondata['value']
     emit('get_data', jsondata)
@@ -109,31 +104,36 @@ def handle_get_data(jsondata):
 def handle_post_data(jsondata):
     variables.log2("socketio - post data", json.dumps(jsondata))
 
-    if jsondata['reqtype'] == 'sensors':
-        pass
-    elif jsondata['reqtype'] == 'control':
-        if 'log' in jsondata:
-            if not variables.appFlags['log'] and jsondata['log']:
-                variables.new_log()
-            variables.appFlags['log'] = jsondata['log']
+    if jsondata['type'] == 'dev':
+        if jsondata['id'] == 1:
+            # set pump cmd
+            variables.test_manager.set_pump(jsondata['value'])
 
-        if 'mode' in jsondata:
-            variables.appFlags['mode'] = jsondata['mode']
-            variables.appFlagsAux['spab_index'] = 0
-            if variables.appFlags['mode'] not in [1, 5]:
-                variables.appFlags['integral'] = 0
-        if 'pump' in jsondata:
-            variables.appFlags['pump'] = jsondata['pump']
-            variables.appFlagsAux['set_pump'] = True
-        if 'ref' in jsondata:
-            variables.appFlags['ref'] = jsondata['ref']
-        if 'controller' in jsondata:
-            variables.appFlags['controller_id'] = jsondata['controller']
-    elif jsondata['reqtype'] == 'control_setup':
-        if 'multi' in jsondata:
-            variables.appFlags['multi'] = jsondata['multi']
+    elif jsondata['type'] == 'app':
+        if jsondata['id'] == 1:
+            # change flow ref
+            variables.app_flags['ref'] = jsondata['value']
+        elif jsondata['id'] == 10:
+            # set log flag
+            if jsondata['value'] == True:
+                if not variables.app_flags['log']:
+                    variables.new_log()
+                    variables.app_flags['log'] = True
+            else:
+                variables.app_flags['log'] = False
 
-    # emit('data', jsondata)
+        elif jsondata['id'] == 20:
+            # change control mode
+            variables.app_flags['mode'] = jsondata['value']
+            variables.app_aux_flags['spab_index'] = 0
+            if variables.app_flags['mode'] not in [1, 5]:
+                variables.app_flags['integral'] = 0
+        elif jsondata['id'] == 21:
+            # change controller model
+            variables.app_flags['controller_id'] = jsondata['value']
+        elif jsondata['id'] == 30:
+            # use multi-model controller
+            variables.app_flags['multi'] = jsondata['value']
 
 @socketio.on('disconnect_request')
 def handle_disconnect_request(jsondata):
@@ -184,11 +184,11 @@ def apiDatabaseSensors():
 
             return json.dumps(results, default=default_json)
         else:
-            result = variables.const1["RESULT_FAIL"]
+            result = variables.return_values_def["RESULT_FAIL"]
             return json.dumps({"result": result})
     except:
         variables.print_exception("[routes][/api/database/sensors]")
-        result = variables.const1["RESULT_FAIL"]
+        result = variables.return_values_def["RESULT_FAIL"]
         return json.dumps({"result": result})
 
 @app.route('/api/download/log', methods=['GET'])
@@ -202,12 +202,12 @@ def apiDownloadLog():
 @app.route('/api/reload', methods=['GET'])
 def apiReload():
     variables.load_app_config()
-    result = variables.const1["RESULT_OK"]
+    result = variables.return_values_def["RESULT_OK"]
     return json.dumps({"result": result})
 
 @app.route('/api/download/log-dbg', methods=['GET'])
 def apiDownloadLogDbg():
-    filename = variables.appConfig["log_file_stdout"]
+    filename = variables.app_config["log_file_stdout"]
     return send_file(filename,
                      mimetype='text/plain',
                      attachment_filename="log_file_stdout",
@@ -220,8 +220,8 @@ if __name__ == '__main__':
     q_read_tcp = Queue(maxsize=10)
     q_write_tcp = Queue(maxsize=10)
     time.sleep(1)
-    print(variables.appConfig["db_selection"])
-    db_info = variables.appConfig[variables.appConfig["db_selection"]]
+    print(variables.app_config["db_selection"])
+    db_info = variables.app_config[variables.app_config["db_selection"]]
     try:
         variables.cnxn = pyodbc.connect(
             'DRIVER=' + db_info["driver"] + ';SERVER=' + db_info["server"] + ';DATABASE=' +
@@ -230,17 +230,8 @@ if __name__ == '__main__':
     except:
         variables.print_exception("[server]")
 
-    t = TestRunnerManager()
-    t.start()
-    # thread2 = DataBucketThread()
-    # thread2.start()
-
-    # t = threading.Thread(target=simple_tcp_server)
-    # t.daemon = True
-    # t.start()
-
-    # thread5 = DebugPrintThread()
-    # thread5.start()
+    variables.test_manager = TestRunnerManager()
+    variables.test_manager.start()
 
     tlog = Log()
     tlog.start()
