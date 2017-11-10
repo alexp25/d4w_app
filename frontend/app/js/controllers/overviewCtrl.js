@@ -7,7 +7,7 @@ angular.module('app').controller('overviewCtrl', ['$scope', 'esriLoader', 'socke
       reqtype: 'sensors',
       type: 0,
       id: 0,
-      n: 100
+      n: 10
     };
 
 
@@ -272,37 +272,18 @@ angular.module('app').controller('overviewCtrl', ['$scope', 'esriLoader', 'socke
             //   position: "top-left"
             // });
 
-            var chartRefresh = function() {
-              var min, max;
-              console.log('chart refresh');
-              if ($scope.valueArray) {
-                max = Math.max.apply(null, $scope.valueArray);
-                min = Math.min.apply(null, $scope.valueArray);
-                // auto range
-                $scope.chart[0].options.range = [min - 10, max + 10];
-              }
-              $scope.chartData = {
-                array: [$scope.dataArray],
-                timestamp: new Date()
-              };
+
+
+            $scope.chartData = {
+              columns: ['x', 'series 1'],
+              rows: [
+                [1, 10],
+                [2, 20],
+                [3, 30],
+              ],
+              timestamp: new Date()
             };
 
-            var chartUpdate = function(jsonObj) {
-              console.log('chart update');
-              $scope.dataArray = [];
-              $scope.valueArray = [];
-              var j;
-              for (j = 0; j < jsonObj.length; j++) {
-                $scope.dataArray[j] = {
-                  // x: jsonObj[j].Timestamp.getTime(),
-                  x: new Date(jsonObj[j].Timestamp),
-                  // x: jsonObj[j].Timestamp,
-                  y: jsonObj[j].Value
-                };
-                $scope.valueArray[j] = jsonObj[j].Value;
-              }
-              chartRefresh();
-            };
 
             var getData = function(params1) {
               $scope.hasData = false;
@@ -326,22 +307,26 @@ angular.module('app').controller('overviewCtrl', ['$scope', 'esriLoader', 'socke
 
                 $scope.hasData = true;
                 console.log($scope.jsonObj[0]);
-                $scope.displayData = false;
-                if (jsonObj[0] !== undefined) {
-                  var startDate = jsonObj[0].Timestamp;
-                  var endDate = jsonObj[jsonObj.length - 1].Timestamp;
-                  var dataInterval = (endDate - startDate) / jsonObj.length;
+                // $scope.displayData = false;
 
-                  for (i = 0; i < $scope.chart.length; i++) {
-                    $scope.chart[i].options.pointStart = startDate;
-                    $scope.chart[i].options.pointInterval = dataInterval;
+
+                if (jsonObj[0] !== undefined) {
+
+                  var rows = [];
+                  var uk, yk, rk;
+                  for (i = 0; i < jsonObj.length; i++) {
+                    uk = jsonObj[i].Value;
+
+                    rows[i] = [new Date(jsonObj[i].Timestamp), uk];
                   }
-                  chartUpdate(jsonObj);
+                  $scope.chartData.rows = rows;
+                  $scope.chartData.timestamp = new Date();
+
                   $timeout(function() {
                     $scope.displayData = true;
                   });
 
-                  console.log('dataset updated');
+                  console.log('dataset updated ', $scope.chartData);
                 }
 
               }).
@@ -405,15 +390,6 @@ angular.module('app').controller('overviewCtrl', ['$scope', 'esriLoader', 'socke
               });
             });
 
-            var chartInit = function(n) {
-              $scope.dataArray = [];
-              for (var j = 0; j < 50; j++) {
-                $scope.dataArray[j] = {
-                  x: 0,
-                  y: 0
-                };
-              }
-            };
 
             var pollData = function() {
               $scope.timer[2] = $timeout(function() {
@@ -544,8 +520,6 @@ angular.module('app').controller('overviewCtrl', ['$scope', 'esriLoader', 'socke
       );
       //end esri loader setup
 
-      chartInit();
-
 
       $scope.timer[0] = $timeout(function() {
         initSocket();
@@ -566,23 +540,12 @@ angular.module('app').controller('overviewCtrl', ['$scope', 'esriLoader', 'socke
       numericDisplay.colorOn = "#090909";
       numericDisplay.colorOff = "#ffffff";
       numericDisplay.draw();
-
       numericDisplay.setValue("0");
-
     };
 
-    $scope.chart = [{
-      ntraces: 1,
-      options: {
-        xAxisType: 'datetime',
-        pointStart: Date.UTC(2010, 0, 1),
-        pointInterval: 60 * 1000, // 1 min1
-        range: [0, 1000],
-        //maxThreshold: 280,
-        yAxisTickInterval: 5,
-        labels: ['sensor data']
-      }
-    }];
+
+
+
 
     var clearTimers = function() {
       for (var i = 0; i < $scope.timer.length; i++) {

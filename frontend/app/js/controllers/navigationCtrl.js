@@ -46,18 +46,6 @@ angular.module('app').controller('navigationCtrl', ['$scope',
       name: 'Overview',
       url: '#/overview',
       icon: ''
-    }, {
-      name: 'Detail view',
-      url: '#/detail-view',
-      icon: ''
-    },{
-      name: 'Control',
-      url: '#/control',
-      icon: ''
-    }, {
-      name: 'Settings',
-      url: '#/settings',
-      icon: ''
     }];
 
     $scope.login = function() {

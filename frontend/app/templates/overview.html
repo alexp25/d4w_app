@@ -11,16 +11,12 @@
     <div flex layout="column">
       <ul>
         <li>
-          <strong>Lat:</strong>
-          {{ mapView.center.latitude | number:3 }},
-          <strong>Lng:</strong>
-          {{ mapView.center.longitude | number:3 }}</li>
+          <strong>Lat:</strong> {{ mapView.center.latitude | number:3 }},
+          <strong>Lng:</strong> {{ mapView.center.longitude | number:3 }}</li>
         <li>
-          <strong>Scale:</strong>
-          {{ mapView.scale | number:2 }}</li>
+          <strong>Scale:</strong> {{ mapView.scale | number:2 }}</li>
         <li>
-          <strong>Zoom:</strong>
-          {{ mapView.zoom | number:2 }}</li>
+          <strong>Zoom:</strong> {{ mapView.zoom | number:2 }}</li>
       </ul>
       <span class="raspi-label-s" ng-if="selected.type!==''">
         selected element
@@ -56,10 +52,13 @@
       </ul> -->
     <!-- {{selected}} -->
     <!-- <div class="raspi-margin"> -->
-    <div>
+    <div flex>
       <!-- <div style="max-height:200px;width:200px;"> -->
-      <raspi-plain-chart data="chartData" ng-if="mapLoaded" options="chart[0].options" size="{height:200}"></raspi-plain-chart>
-      <!-- </div> -->
+      <!-- <raspi-plain-chart data="chartData" ng-if="mapLoaded" options="chart[0].options" size="{height:200}"></raspi-plain-chart> -->
+      <c3-line  ng-if="displayData" cid="1" data="chartData" options="{showPoint:true,ymin:0,ymax:1000,height:300,xtype:'timeseries',type:'line',format:'%d.%m - %H:%M'}"></c3-line>
+      <!-- <highchart config="testChartConfig"></highchart> -->
+      <!-- <c3-line-1 ng-if="showChart" class="chart-style" cid="2" timestamp="control.timestamp" data="[control.pump, control.ref, jsondata.info.yk]" options="{caption: ['Pump command','Flow setpoint','Sensor output'], ymin:0,ymax:1000,width:600,height:200,xtype:'timeseries',type:'line'}"></c3-line> -->
+        <!-- </div> -->
     </div>
     <!-- </div> -->
   </div>

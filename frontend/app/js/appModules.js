@@ -1,11 +1,9 @@
 angular.module('app', [
-  'ui',
-  'ui.bootstrap',
+
   'ui.router',
   'ngMaterial',
-  'highcharts-ng',
+  // 'thatisuday.dropzone',
 
-  'angular-table',
   // 'socket.io',
   // 'ngWebSocket',
   // 'esri.map'

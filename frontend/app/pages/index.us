@@ -25,19 +25,11 @@
 
   <link rel="stylesheet" href="css/app.css">
 
-  <script src="libs/socket.io.js"></script>
-
-  <!-- load Esri JSAPI -->
-  <script src="//js.arcgis.com/4.3/"></script>
-  <!-- <script src="libs/arcgis_js_v43_api/4.3/4.3/init.js"></script> -->
-  <script src="libs/jquery/dist/jquery.js" type="text/javascript"></script>
-  <script src="libs/angular/angular.js" type="text/javascript"></script>
-  <script src="libs/SegmentDisplay/segment-display.js" type="text/javascript"></script>
-
-<!-- concatenated app files -->
   <script src="js/app.js"></script>
 
+  <script src="//js.arcgis.com/4.3/"></script>
 
+  <script src="libs/SegmentDisplay/segment-display.js" type="text/javascript"></script>
   <!-- load angular-esri-map -->
   <script src="//unpkg.com/angular-esri-map@2"></script>
 </head>

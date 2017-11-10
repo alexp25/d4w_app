@@ -11,28 +11,32 @@ module.exports = function(lineman) {
 
     js: {
       vendor: [
-        // 'vendor/bower_components/jquery/dist/jquery.js',
-        // 'vendor/bower_components/angular/angular.js',
+        'vendor/bower_components/jquery/dist/jquery.js',
+        'vendor/bower_components/angular/angular.js',
         'vendor/bower_components/angular-ui/build/angular-ui.js',
-        'vendor/bower_components/angular-bootstrap/ui-bootstrap.js',
-        'vendor/bower_components/angular-bootstrap/ui-bootstrap-tpls.js',
         'vendor/bower_components/angular-animate/angular-animate.js',
         'vendor/bower_components/angular-aria/angular-aria.js',
         'vendor/bower_components/angular-material/angular-material.js',
         'vendor/bower_components/angular-ui-router/release/angular-ui-router.js',
 
+        'vendor/bower_components/socket.io-client/socket.io.js',
+
         // 'vendor/bower_components/angularjs-slider/dist/rzslider.js',
 
-        'vendor/bower_components/jquery-ui/jquery-ui.js',
+        // c3 charts
+        'vendor/bower_components/d3/d3.js',
+        'vendor/bower_components/c3/c3.js',
 
-        'vendor/bower_components/at-table/dist/angular-table.js',
+        // dropzone
+        // dropzone
+        'vendor/bower_components/dropzone/dist/dropzone.js',
+        'vendor/bower_components/ng-dropzone/dist/ng-dropzone.js',
 
-        'vendor/bower_components/angular-7seg/ut-7seg.js',
+        // 'vendor/bower_components/c3-angular/c3-angular.js',
 
 
-        'vendor/bower_components/highcharts/highstock.src.js',
-        'vendor/bower_components/highcharts/highcharts-more.src.js',
-        'vendor/bower_components/highcharts-ng/dist/highcharts-ng.js'
+        'vendor/bower_components/jquery-ui/jquery-ui.js'
+        // 'vendor/bower_components/angular-7seg/ut-7seg.js',
       ],
       app: [
         "app/js/appModules.js",
@@ -51,12 +55,14 @@ module.exports = function(lineman) {
       vendor: [
         'vendor/bower_components/angular-material/angular-material.css',
         'vendor/bower_components/font-awesome/css/font-awesome.css',
-        'vendor/bower_components/bootstrap/dist/css/bootstrap.css',
         'vendor/bower_components/jquery-ui/themes/base/jquery-ui.css',
-
         'vendor/bower_components/angular-7seg/ut-7seg.css',
 
-        // "vendor/bower_components/c3/c3.css",
+        // dropzone
+        'vendor/bower_components/dropzone/dist/dropzone.css',
+        'vendor/bower_components/ng-dropzone/dist/ng-dropzone.css',
+
+        "vendor/bower_components/c3/c3.css",
         // 'vendor/bower_components/angularjs-slider/dist/rzslider.css'
       ],
       app: [
